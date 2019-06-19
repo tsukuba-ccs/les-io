@@ -1,0 +1,20 @@
+&parallel
+iprocs	=	1
+jprocs	=	1
+/
+
+&domain
+ids		= 1
+ide		= 64
+jds		= 1
+jde		= 64
+kds		= 1
+kde		= 64
+num_soil = 2
+/
+
+&physics
+soil_model = 1
+mp_model = 1
+/
+
