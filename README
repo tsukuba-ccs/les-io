@@ -1,27 +1,41 @@
+LESbench
+========
+
+LESbench is an I/O kernel of LES code.
+
 LESbench generates 3-dimensional meteorological data. 
 This data is divided into blocks which number is same as MPI procs. 
 The division executed in i- and j-direction (In meteorological data, 
-“i” and “j” indexes denote horizontal axis and “k” index denotes vertical axis). 
+`i` and `j` indexes denote horizontal axis and `k` index denotes vertical axis). 
 Thus, users specify both the number of MPI procs used in i-direction and j-direction. 
 The total number of MPI procs is multiplication of i- and j-direction procs.
 
 Not only size determination option, some physics options are also extracted from LES. 
 These options control the number of variables or number of layers included into files.
 
-Description of namelist.input 
-  This namelist.input file set the problem size and some options. 
-“parallel” : parallel execution option
-“domain” : domain size (file size) 
-“physics” : physics model option.
+Installation
+------------
+See INSTALL.
 
-“parallel” section
+
+Configuration
+-------------
+You can change behavior of LESbench by editing `namelist.input` file.
+This namelist.input file set the problem size and some options. 
+`parallel` : parallel execution option
+`domain`   : domain size (file size) 
+`physics`  : physics model option.
+
+
+`parallel` section
 iprocs : number of process using for i-direction.
 jprocs : number of process using for j-direction.
 
 Note.
-The total number of MPI procs should be set into iprocs*jprocs.
+  The total number of MPI procs should be set into iprocs*jprocs.
 
-“domain” section
+
+`domain` section
 ids      : the start index of whole domain in i-direction.
 ide      : the end index of whole domain in i-direction.
 jds      : the start index of whole domain in j-direction.
@@ -30,14 +44,15 @@ kds      : the start index of whole domain in k-direction.
 kde      : the end index of whole domain in k-direction.
 num_soil : number of soil layer.
 
-Note
+Note.
   The number (ide-ids+1) should be larger than iprocs, due to block division executed into i- and j-directions. 
   In the same manner, (jde-jds+1) should be larger than jprocs.
   num_soil option controls the number of soil layer in the model. 
-  In this benchmark, the number of layer(s) of variable named “smois” (soil moisture in ground) is set using this parameter. 
+  In this benchmark, the number of layer(s) of variable named `smois` (soil moisture in ground) is set using this parameter. 
   This option is activated only when soil_model=1.
-  
-“physics” section
+
+
+`physics` section
 soil_model : select soil model
          1 : enable soil model
          0 : disable soil model
@@ -46,6 +61,6 @@ mp_model : select cloud microphysics model
         1 : enable cloud microphysics model (warm rain model)
         9 : enable cloud microphysics model (bin model)
 Note.
-  When soil_model = 1, variable named “smois” is used.
+  When soil_model = 1, variable named `smois` is used.
   When mp_model =1 and 9, the 4-dimensional variables related to cloud (i.e. cloud moisture) are used. 
   Therefore, the file size becomes larger.
