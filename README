@@ -1,7 +1,7 @@
 LESbench
 ========
 
-LESbench is an I/O kernel of LES code.
+LESbench is an I/O kernel of Large Eddy Simulation (LES) [1] code.
 
 LESbench generates 3-dimensional meteorological data. 
 This data is divided into blocks which number is same as MPI procs. 
@@ -64,3 +64,13 @@ Note.
   When soil_model = 1, variable named `smois` is used.
   When mp_model =1 and 9, the 4-dimensional variables related to cloud (i.e. cloud moisture) are used. 
   Therefore, the file size becomes larger.
+
+
+References
+----------
+[1]: R. Ikeda, H. Kusaka, S. Iizuka, and T. Boku, "Development of Urban Meteorological LES model for thermal environment at city scale," 2015.
+
+External Link
+-------------
+- Large Eddy Simulation (LES) Model
+  http://www.geoenv.tsukuba.ac.jp/~kusakaken/index.php?id=534
