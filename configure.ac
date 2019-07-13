@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([LESBENCHMARK], [1.5], [BUG-REPORT-ADDRESS])
+AC_INIT([LESBENCHMARK], [1.5], [les-io@ccs.tsukuba.ac.jp])
 AM_INIT_AUTOMAKE([foreign])
 
 AC_PROG_FC([mpif90 mpifort])
