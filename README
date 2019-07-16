@@ -1,39 +1,33 @@
-LESbench
-========
+LES-IO Benchmark
+================
 
-LESbench is an I/O kernel of Large Eddy Simulation (LES) [1] code.
+LES-IO Benchmark is an I/O benchmark that consists of an I/O kernel of City-LES
+code [1] in MPI and netCDF.  It generates three-dimensional meteorological data
+in the netCDF format.
 
-LESbench generates 3-dimensional meteorological data. 
-This data is divided into blocks which number is same as MPI procs. 
-The division executed in i- and j-direction (In meteorological data, 
-`i` and `j` indexes denote horizontal axis and `k` index denotes vertical axis). 
-Thus, users specify both the number of MPI procs used in i-direction and j-direction. 
-The total number of MPI procs is multiplication of i- and j-direction procs.
-
-Not only size determination option, some physics options are also extracted from LES. 
-These options control the number of variables or number of layers included into files.
+LES-IO Benchmark is executed in iprocs x jprocs MPI processes.  The number of
+processes, problem sizes, and physics model options can be specified by the
+'namelist.input' file.
 
 Installation
 ------------
 See INSTALL.
 
-
 Configuration
 -------------
-You can change behavior of LESbench by editing `namelist.input` file.
-This namelist.input file set the problem size and some options. 
-`parallel` : parallel execution option
-`domain`   : domain size (file size) 
-`physics`  : physics model option.
+System configuration and simulation configuration can be specified by the
+`namelist.input` file.  It consists of three sections;
 
+`parallel` : parallel execution option
+`domain`   : domain size
+`physics`  : physics model option
 
 `parallel` section
-iprocs : number of process using for i-direction.
-jprocs : number of process using for j-direction.
+iprocs : number of processes in the horizontal i direction.
+jprocs : number of processes in the horizontal j direction.
 
 Note.
-  The total number of MPI procs should be set into iprocs*jprocs.
-
+  The total number of MPI processes is iprocs x jprocs.
 
 `domain` section
 ids      : the start index of whole domain in i-direction.
@@ -42,29 +36,27 @@ jds      : the start index of whole domain in j-direction.
 jde      : the end index of whole domain in j-direction.
 kds      : the start index of whole domain in k-direction.
 kde      : the end index of whole domain in k-direction.
-num_soil : number of soil layer.
+num_soil : number of soil layers.
 
 Note.
-  The number (ide-ids+1) should be larger than iprocs, due to block division executed into i- and j-directions. 
-  In the same manner, (jde-jds+1) should be larger than jprocs.
-  num_soil option controls the number of soil layer in the model. 
-  In this benchmark, the number of layer(s) of variable named `smois` (soil moisture in ground) is set using this parameter. 
-  This option is activated only when soil_model=1.
-
+  The (ide-ids+1) and (jde-jds+1) should be larger than iprocs and jprocs,
+  respectivelys. 
+  num_soil option controls the number of soil layers in the model.  The num_soil
+  is only effective when soil_model is 1 in physics section.
 
 `physics` section
-soil_model : select soil model
-         1 : enable soil model
-         0 : disable soil model
-mp_model : select cloud microphysics model
-        0 : disable cloud microphysics model
-        1 : enable cloud microphysics model (warm rain model)
-        9 : enable cloud microphysics model (bin model)
-Note.
-  When soil_model = 1, variable named `smois` is used.
-  When mp_model =1 and 9, the 4-dimensional variables related to cloud (i.e. cloud moisture) are used. 
-  Therefore, the file size becomes larger.
+soil_model : soil model
+    1 : enable soil model
+    0 : disable soil model
+mp_model : cloud microphysics model
+    0 : disable cloud microphysics model
+    1 : enable cloud microphysics model (warm rain model)
+    9 : enable cloud microphysics model (bin model)
 
+Note.
+  When soil_model is 1, the num_soil is effective in domain section.
+  When mp_model is 1 or 9, the generated data becomes four-dimensional variables
+  including the cloud (i.e. cloud moisture).  The output data is larger.
 
 References
 ----------
