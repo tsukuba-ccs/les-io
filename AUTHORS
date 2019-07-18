@@ -1,7 +1,10 @@
-LES-IO is written by:
-Takuto Sato
-Hiroyuki Kusaka
-Ryosaku Ikeda
-Kazunari Takahashi
+LES-IO authors
+==============
 
-Copyright (c) LES-IO authors All rights reserved.
+LES-IO is maintained by Kusaka Lab. and HPCS Lab. at University of Tsukuba.
+
+./src/*.f90: Ryosaku Ikeda, Kazunari Takahashi, Takuto Sato, Hiroyuki Kusaka
+./README: Takuto Sato, Osamu Tatebe
+./INSTALL ./configure.ac ./src/Makefile.mk: Kohei Sugihara
+
+Copyright (C) 2015-2019 LES-IO authors.
