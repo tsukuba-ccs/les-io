@@ -1,8 +1,7 @@
 LES-IO authors
 ==============
 
-LES-IO is maintained by Kusaka Lab. and HPCS Lab. at University of Tsukuba.
-
+Original creator of each file in the LES-IO packages are listed below:
 ./src/*.f90: Ryosaku Ikeda, Kazunari Takahashi, Takuto Sato, Hiroyuki Kusaka
 ./README: Takuto Sato, Osamu Tatebe
 ./INSTALL ./configure.ac ./src/Makefile.mk: Kohei Sugihara
