@@ -1,3 +1,5 @@
+! Copyright (C) 2015-2019 by LES-IO authors.
+! See AUTHORS and LICENSE in top-level directory.
 module module_var_output
 	implicit none
 
