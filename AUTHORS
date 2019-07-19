@@ -1,9 +1,11 @@
 LES-IO authors
 ==============
 
-Original creator of each file in the LES-IO packages are listed below:
-./src/*.f90: Ryosaku Ikeda, Kazunari Takahashi, Takuto Sato, Hiroyuki Kusaka
-./README: Takuto Sato, Osamu Tatebe
-./INSTALL ./configure.ac ./src/Makefile.mk: Kohei Sugihara
+Original developers in the LES-IO package:
+- Kazunari Takahashi
+- Ryosaku Ikeda
+- Takuto Sato
+- Hiroyuki Kusaka
 
 Copyright (C) 2015-2019 LES-IO authors.
+Mail: les-io@ccs.tsukuba.ac.jp
