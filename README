@@ -11,7 +11,7 @@ processes, problem sizes, and physics model options can be specified by the
 It generates the following four kinds of three-dimensional meteorological data
 in the './output/' directory in the netCDF format;
 
-lesout_averate.nc   - average data in several time steps 
+lesout_average.nc   - average data in several time steps 
 lesout_instant.nc   - instant data at a time step
 lesout_integral.nc  - integrated data in several time steps
 lesrst_restart.nc   - restart data
