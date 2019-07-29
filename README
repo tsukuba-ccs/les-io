@@ -55,8 +55,8 @@ Note.
 
 `physics` section
 soil_model : soil model
-    1 : use soil model
     0 : no soil model
+    1 : use soil model
 mp_model : cloud microphysics model
     0 : no cloud microphysics model
     1 : use cloud microphysics model (warm rain model)
