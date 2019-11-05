@@ -1,0 +1,38 @@
+Installation
+============
+
+
+Build Requirements
+------------------
+Following packages are required to build LES-IO benchmark.
+
+* MPI compiler (e.g. mpifort)
+* NetCDF-C (with parallel support)
+* NetCDF-Fortran (with parallel support)
+
+
+Procedure
+---------
+
+(1) Generate Makefile with the ./configure [OPTIONS] script.
+
+[OPTIONS] are listed below. Details are available by ./configure --help
+
+  --prefix=PREFIX         Specify path to installation directory on `make install`
+
+Also, you should provide an installation path to both of NetCDF-{C, Fortran}.
+
+  --with-netcdf=PATH      Specify NetCDF-C path [default=PREFIX]
+                          (Example: --with-netcdf=$(HOME)/local)
+
+  --with-netcdff=PATH     Specify NetCDF-Fortran path [default=PREFIX]
+                          (Example: --with-netcdff=$(HOME)/local)
+
+(2) make
+Now you can see ./LESBENCHMARK in ./src directory.
+
+(3) make install
+Or, just execute by ./src/LESBENCHMARK
+LES-IO reads a configuration file ./namelist.input in your current directory
+For understanding about these configuration formats, please read ./README
+
