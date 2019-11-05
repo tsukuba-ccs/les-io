@@ -4,8 +4,7 @@
 AC_PREREQ([2.69])
 AC_INIT([LESBENCHMARK], [1.5], [les-io@ccs.tsukuba.ac.jp])
 AM_INIT_AUTOMAKE([foreign])
-
-AC_PROG_FC([mpif90 mpifort])
+AC_CONFIG_MACRO_DIR([./m4])
 
 # check for C dependencies
 
@@ -53,9 +52,9 @@ AC_CHECK_LIB(netcdf, nc_create_par,
 CFLAGS="${SAVED_CFLAGS}"
 
 
-
 # check for Fortran environment
 AC_LANG_PUSH(Fortran)
+AX_PROG_FC_MPI([], [], [AC_MSG_ERROR(["Cannot locate MPI implementation for Fortran."])])
 
 ## NetCDF-Fortran
 AC_MSG_CHECKING([path to NetCDF-Fortran])
