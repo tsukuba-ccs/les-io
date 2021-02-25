@@ -21,10 +21,10 @@ AC_ARG_WITH(netcdf,
             [AC_MSG_RESULT([empty (use default)])])
 
 case "x$with_netcdf" in
-    xyes)
+    x|xyes)
         # use default value
-        netcdf_inc="${PREFIX}/include"
-        netcdf_lib="${PREFIX}/lib"
+        netcdf_inc="${prefix}/include"
+        netcdf_lib="${prefix}/lib"
     ;;
     xno)
         AC_MSG_ERROR("NetCDF-C library is required")
@@ -35,8 +35,7 @@ case "x$with_netcdf" in
     ;;
 esac
 
-SAVED_CFLAGS="${CFLAGS}"
-CFLAGS="-I${netcdf_inc} -L${netcdf_lib}"
+CFLAGS="${CFLAGS} -I${netcdf_inc} -L${netcdf_lib}"
 
 AC_CHECK_LIB(netcdf, nc_create,
              [AC_CHECK_HEADER(netcdf.h,
@@ -48,9 +47,6 @@ AC_CHECK_LIB(netcdf, nc_create,
 AC_CHECK_LIB(netcdf, nc_create_par,
              [],
              [AC_MSG_ERROR("NetCDF-C with parallel support is not found.")])
-
-CFLAGS="${SAVED_CFLAGS}"
-
 
 # check for Fortran environment
 AC_LANG_PUSH(Fortran)
@@ -69,10 +65,10 @@ AC_ARG_WITH(netcdff,
             [AC_MSG_RESULT([empty (use default)])])
 
 case "x$with_netcdff" in
-    xyes)
+    x|xyes)
         # use default value
-        netcdff_inc="${PREFIX}/include"
-        netcdff_lib="${PREFIX}/lib"
+        netcdff_inc="${prefix}/include"
+        netcdff_lib="${prefix}/lib"
     ;;
     xno)
         AC_MSG_ERROR("NetCDF-Fortran library is required")
@@ -83,8 +79,7 @@ case "x$with_netcdff" in
     ;;
 esac
 
-SAVED_FCFLAGS="${FCFLAGS}"
-FCFLAGS="-I${netcdff_inc} -L${netcdff_lib}"
+FCFLAGS="${FCFLAGS} -I${netcdff_inc} -L${netcdff_lib}"
 
 AC_CHECK_LIB(netcdff, nf_create,
              [AC_CHECK_HEADER(netcdf.mod,
@@ -98,8 +93,6 @@ AC_CHECK_LIB(netcdff, nf_create_par,
              [],
              [AC_MSG_ERROR("NetCDF-Fortran with parallel support is not found.")],
              [-lnetcdf])
-
-FCFLAGS="${SAVED_FCFLAGS}"
 
 AC_LANG_POP(Fortran) # end of Fortran environment checking
 
