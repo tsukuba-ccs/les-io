@@ -1,0 +1,51 @@
+x-common:
+  &x-common
+  build:
+    context: ..
+    dockerfile: docker/Dockerfile
+  init: true
+  networks:
+    les_net:
+  privileged: false
+  command: >
+    bash -c "sudo service ssh restart && sleep infinity"
+  extra_hosts:
+    - c1:172.30.1.2
+    - c2:172.30.1.3
+    - c3:172.30.1.4
+    - c4:172.30.1.5
+
+services:
+  c1:
+    <<: *x-common
+    hostname: c1
+    networks:
+      les_net:
+        ipv4_address: 172.30.1.2
+  c2:
+    <<: *x-common
+    hostname: c2
+    networks:
+      les_net:
+        ipv4_address: 172.30.1.3
+  c3:
+    <<: *x-common
+    hostname: c3
+    networks:
+      les_net:
+        ipv4_address: 172.30.1.4
+  c4:
+    <<: *x-common
+    hostname: c4
+    networks:
+      les_net:
+        ipv4_address: 172.30.1.5
+
+networks:
+  les_net:
+    name: les_net
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.30.1.0/24
