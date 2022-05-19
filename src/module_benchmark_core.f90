@@ -2,6 +2,16 @@
 ! See AUTHORS and LICENSE in top-level directory.
 module module_benchmark_core
 	contains
+	subroutine check(status)
+	use netcdf
+	integer, intent ( in) :: status
+
+	if(status /= nf90_noerr) then
+		print *, trim(nf90_strerror(status))
+		stop "Stopped"
+	end if
+	end subroutine check
+
 	subroutine ReadRestartNetCDF	(	&
 			datasize, time_write		&
 		)
@@ -179,7 +189,7 @@ module module_benchmark_core
 		
 		! Create NetCDF File Section - OUT
 		FILE_NAME = "./output/lesout_integral.nc"
-		ret = nf90_create_par(FILE_NAME, IOR(NF90_NETCDF4, NF90_MPIIO), MPI_COMM_WORLD, MPI_INFO_NULL, ncid_sum)
+		call check(nf90_create_par(FILE_NAME, IOR(NF90_NETCDF4, NF90_MPIIO), MPI_COMM_WORLD, MPI_INFO_NULL, ncid_sum))
 		
 		! Dimension - atm - i, j, k
 		ret = nf90_def_dim(ncid_sum, "i", (ide-ids)+1, dimid_sum_i)
@@ -263,7 +273,7 @@ module module_benchmark_core
                 integer :: fsize
 	
 		! Create NetCDF File - OUT
-		FILE_NAME = "lesout_instant.nc"
+		FILE_NAME = "./output/lesout_instant.nc"
 		ret = nf90_create_par(FILE_NAME, IOR(NF90_NETCDF4, NF90_MPIIO), MPI_COMM_WORLD, MPI_INFO_NULL, ncid_out)
 
 		! -- ATM --
