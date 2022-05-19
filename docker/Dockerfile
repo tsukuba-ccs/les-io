@@ -19,14 +19,14 @@ RUN apt-get update \
  && CC=mpicc ./configure --enable-parallel --enable-fortran --prefix=/usr/local \
  && make \
  && make install \
- && cd .. \
+ && cd \
  && wget https://downloads.unidata.ucar.edu/netcdf-c/$NETCDFVER/$NETCDF.tar.gz \
  && tar zxfp $NETCDF.tar.gz \
  && cd $NETCDF \
  && CC=mpicc H5DIR=/usr/local LIBS=-ldl ./configure --disable-shared --enable-parallel-tests --prefix=/usr/local \
  && make \
  && make install \
- && cd .. \
+ && cd \
  && wget https://downloads.unidata.ucar.edu/netcdf-fortran/$NETCDFFVER/$NETCDFF.tar.gz \
  && tar zxfp $NETCDFF.tar.gz \
  && cd $NETCDFF \
@@ -67,4 +67,3 @@ RUN cd \
 
 COPY --chown=$USERNAME:$USERNAME docker/hosts /home/$USERNAME/hosts
 COPY --chown=$USERNAME:$USERNAME docker/namelist.input /home/$USERNAME/namelist.input
-COPY --chown=$USERNAME:$USERNAME output /home/$USERNAME/output
