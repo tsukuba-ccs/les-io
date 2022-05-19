@@ -3,6 +3,12 @@ x-common:
   build:
     context: ..
     dockerfile: docker/Dockerfile
+    args:
+      USERNAME: $USER
+  volumes:
+    - type: bind
+      source: ../output
+      target: /home/$USER/output
   init: true
   networks:
     les_net:

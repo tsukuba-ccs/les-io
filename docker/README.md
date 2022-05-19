@@ -4,7 +4,7 @@
 
 - build image
 
-      % docker compose build --build-arg USERNAME=$(whoami)
+      % docker compose build
 
 - execute containers
 
@@ -15,7 +15,7 @@
 - login to a container and execute LESBENCHMARK
 
       % ssh 172.30.1.2
-      % mpirun -x PATH -np 4 -hostfile hosts -map-by node LESBENCHMARK
+      % mpirun -np 4 -hostfile hosts -map-by node LESBENCHMARK
 
 - shutdown containers
 
