@@ -19,6 +19,7 @@ RUN apt-get update \
  && CC=mpicc ./configure --enable-parallel --enable-fortran --prefix=/usr/local \
  && make \
  && make install \
+ && make clean \
  && cd \
  && wget https://downloads.unidata.ucar.edu/netcdf-c/$NETCDFVER/$NETCDF.tar.gz \
  && tar zxfp $NETCDF.tar.gz \
@@ -26,13 +27,15 @@ RUN apt-get update \
  && CC=mpicc H5DIR=/usr/local LIBS=-ldl ./configure --disable-shared --enable-parallel-tests --prefix=/usr/local \
  && make \
  && make install \
+ && make clean \
  && cd \
  && wget https://downloads.unidata.ucar.edu/netcdf-fortran/$NETCDFFVER/$NETCDFF.tar.gz \
  && tar zxfp $NETCDFF.tar.gz \
  && cd $NETCDFF \
  && CC=mpicc FC=mpif90 F77=mpif77 LIBS="$(nc-config --libs)" ./configure --disable-shared --enable-parallel-tests \
  && make \
- && make install
+ && make install \
+ && make clean
 
 RUN \
   # sshd
@@ -63,7 +66,8 @@ RUN cd \
  && autoreconf -i \
  && ./configure \
  && make \
- && sudo make install
+ && sudo make install \
+ && make clean
 
 COPY --chown=$USERNAME:$USERNAME docker/hosts /home/$USERNAME/hosts
 COPY --chown=$USERNAME:$USERNAME docker/namelist.input /home/$USERNAME/namelist.input
