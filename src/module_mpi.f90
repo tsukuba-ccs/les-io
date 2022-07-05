@@ -38,8 +38,8 @@ module module_mpi
 		itable = MPI_PROC_NULL
 
 		irank = 0
-		do i=0, iprocs-1
-			do j=0, jprocs-1
+		do j=0, jprocs-1
+			do i=0, iprocs-1
 				itable(i,j) = irank
 				if( myrank == irank ) then
 					myranki = i
