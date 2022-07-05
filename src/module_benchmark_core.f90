@@ -27,7 +27,7 @@ module module_benchmark_core
 		
 		! Parallel NetCDF variables
 		character (len = 30) :: FILE_NAME
-		integer :: ncid_read, ret
+		integer :: ncid_read, ret, oldmode
 		integer :: varid_read_u, varid_read_v, varid_read_w, varid_read_t, varid_read_p, varid_read_tke
 		integer :: varid_read_tsfc, varid_read_tg1D, varid_read_rainncv, varid_read_rainncv_int
 		integer :: varid_read_smois
@@ -40,6 +40,7 @@ module module_benchmark_core
 		FILE_NAME = "./output/lesrst_restart.nc"
 		ret = nf90_open_par(FILE_NAME, IOR(NF90_NOWRITE, NF90_MPIIO), &
 						MPI_COMM_WORLD, MPI_INFO_NULL, ncid_read)
+		ret = nf90_set_fill(ncid_read, nf90_nofill, oldmode)
 		
 		! Get the varid of the data variable, based on its name.
 		! -- ATM --
@@ -176,7 +177,7 @@ module module_benchmark_core
 		integer :: i, j, k
 		! Parallel NetCDF variables
 		character (len = 30) :: FILE_NAME
-		integer :: ncid_sum, ret
+		integer :: ncid_sum, ret, oldmode
 		integer :: dimid_sum_i, dimid_sum_j, dimid_sum_k
 		integer :: dimid2D(2), dimid3D(3)
 		integer :: start2D(2), count2D(2), start3D(3), count3D(3)
@@ -190,6 +191,7 @@ module module_benchmark_core
 		! Create NetCDF File Section - OUT
 		FILE_NAME = "./output/lesout_integral.nc"
 		call check(nf90_create_par(FILE_NAME, IOR(NF90_NETCDF4, NF90_MPIIO), MPI_COMM_WORLD, MPI_INFO_NULL, ncid_sum))
+		ret = nf90_set_fill(ncid_sum, nf90_nofill, oldmode)
 		
 		! Dimension - atm - i, j, k
 		ret = nf90_def_dim(ncid_sum, "i", (ide-ids)+1, dimid_sum_i)
@@ -259,7 +261,7 @@ module module_benchmark_core
 		
 		! Parallel NetCDF variables
 		character (len = 30) :: FILE_NAME
-		integer :: ncid_out, stat, ret, dimid2D(2), dimid3D(3), dimid4D(4)
+		integer :: ncid_out, stat, ret, oldmode, dimid2D(2), dimid3D(3), dimid4D(4)
 		integer :: dimid_out_i, dimid_out_j, dimid_out_k, dimid_out_bin, dimid_out_spcs
 		integer :: dimid_out_im1d, dimid_out_kg, dimid_out_nprocs
 		integer :: varid_out_u, varid_out_v, varid_out_w, varid_out_t, varid_out_p, varid_out_tke
@@ -275,6 +277,7 @@ module module_benchmark_core
 		! Create NetCDF File - OUT
 		FILE_NAME = "./output/lesout_instant.nc"
 		ret = nf90_create_par(FILE_NAME, IOR(NF90_NETCDF4, NF90_MPIIO), MPI_COMM_WORLD, MPI_INFO_NULL, ncid_out)
+		ret = nf90_set_fill(ncid_out, nf90_nofill, oldmode)
 
 		! -- ATM --
 		! Dimension - atm - i, j, k
@@ -423,7 +426,7 @@ module module_benchmark_core
 		
 		! Parallel NetCDF variables
 		character (len = 30) :: FILE_NAME
-		integer :: ncid_out, stat, ret, dimid2D(2), dimid3D(3), dimid4D(4)
+		integer :: ncid_out, stat, ret, oldmode, dimid2D(2), dimid3D(3), dimid4D(4)
 		integer :: dimid_out_i, dimid_out_j, dimid_out_k, dimid_out_bin, dimid_out_spcs
 		integer :: dimid_out_im1d, dimid_out_kg, dimid_out_nprocs
 		integer :: varid_out_um, varid_out_vm, varid_out_wm, varid_out_tm, varid_out_tkem
@@ -456,6 +459,7 @@ module module_benchmark_core
 		! Create NetCDF File - OUT
 		FILE_NAME = "./output/lesout_average.nc"
 		ret = nf90_create_par(FILE_NAME, IOR(NF90_NETCDF4, NF90_MPIIO), MPI_COMM_WORLD, MPI_INFO_NULL, ncid_out)
+		ret = nf90_set_fill(ncid_out, nf90_nofill, oldmode)
 	
                  u(:,:,:) = 1.d0; v(:,:,:) = 2.d0; w(:,:,:) = 3.d0
 	
@@ -807,7 +811,7 @@ module module_benchmark_core
 		
 		! Parallel NetCDF variables
 		character (len = 30) :: FILE_NAME
-		integer :: ncid_rst, ret, dimid1D(1), dimid2D(2), dimid3D(3), dimid4D(4)
+		integer :: ncid_rst, ret, oldmode, dimid1D(1), dimid2D(2), dimid3D(3), dimid4D(4)
 		integer :: dimid_rst_i, dimid_rst_j, dimid_rst_k, dimid_rst_bin, dimid_rst_spcs
 		integer :: dimid_rst_im1d, dimid_rst_kg, dimid_rst_l
 		integer :: dimid_rst_nprocs
@@ -824,6 +828,7 @@ module module_benchmark_core
 		! Create NetCDF File - RST
 		FILE_NAME = "./output/lesrst_restart.nc"
 		ret = nf90_create_par(FILE_NAME, IOR(NF90_NETCDF4, NF90_MPIIO), MPI_COMM_WORLD, MPI_INFO_NULL, ncid_rst)
+		ret = nf90_set_fill(ncid_rst, nf90_nofill, oldmode)
 		
 		! -- ATM --
 		! Dimension - atm - i, j, k
