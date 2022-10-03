@@ -59,6 +59,8 @@ RUN useradd -m -s /bin/bash $USERNAME \
  # delete passwd
  && passwd -d $USERNAME
 
+#COPY --chown=$USERNAME:$USERNAME . /home/$USERNAME/les-io
+
 USER $USERNAME
 RUN cd \
  && git clone https://github.com/tsukuba-ccs/les-io.git \
