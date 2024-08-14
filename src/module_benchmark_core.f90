@@ -39,7 +39,6 @@ module module_benchmark_core
 		
 		FILE_NAME = "./output/lesrst_restart.nc"
 		call check(nf90_open_par(FILE_NAME, IOR(NF90_NOWRITE, NF90_MPIIO), MPI_COMM_WORLD, MPI_INFO_NULL, ncid_read))
-		call check(nf90_set_fill(ncid_read, nf90_nofill, oldmode))
 		
 		! Get the varid of the data variable, based on its name.
 		! -- ATM --
