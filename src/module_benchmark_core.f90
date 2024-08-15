@@ -39,7 +39,6 @@ module module_benchmark_core
 		
 		FILE_NAME = "./output/lesrst_restart.nc"
 		call check(nf90_open_par(FILE_NAME, IOR(NF90_NOWRITE, NF90_MPIIO), MPI_COMM_WORLD, MPI_INFO_NULL, ncid_read))
-		call check(nf90_set_fill(ncid_read, nf90_nofill, oldmode))
 		
 		! Get the varid of the data variable, based on its name.
 		! -- ATM --
@@ -53,7 +52,7 @@ module module_benchmark_core
 		! -- SFC --
 		call check(nf90_inq_varid(ncid_read, "tsfc", varid_read_tsfc))
 		call check(nf90_inq_varid(ncid_read, "tg1D", varid_read_tg1D))
-		call check(nf90_inq_varid(ncid_read, "raincnv", varid_read_rainncv))
+		call check(nf90_inq_varid(ncid_read, "rainncv", varid_read_rainncv))
 		call check(nf90_inq_varid(ncid_read, "rainncv_int", varid_read_rainncv_int))
 		
 		! -- SOIL --
