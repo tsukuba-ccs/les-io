@@ -38,34 +38,33 @@ module module_benchmark_core
 		integer :: ts, te, t_rate, t_max
 		
 		FILE_NAME = "./output/lesrst_restart.nc"
-		ret = nf90_open_par(FILE_NAME, IOR(NF90_NOWRITE, NF90_MPIIO), &
-						MPI_COMM_WORLD, MPI_INFO_NULL, ncid_read)
-		ret = nf90_set_fill(ncid_read, nf90_nofill, oldmode)
+		call check(nf90_open_par(FILE_NAME, IOR(NF90_NOWRITE, NF90_MPIIO), MPI_COMM_WORLD, MPI_INFO_NULL, ncid_read))
+		call check(nf90_set_fill(ncid_read, nf90_nofill, oldmode))
 		
 		! Get the varid of the data variable, based on its name.
 		! -- ATM --
-		ret = nf90_inq_varid(ncid_read, "u", varid_read_u)
-		ret = nf90_inq_varid(ncid_read, "v", varid_read_v)
-		ret = nf90_inq_varid(ncid_read, "w", varid_read_w)
-		ret = nf90_inq_varid(ncid_read, "t", varid_read_t)
-		ret = nf90_inq_varid(ncid_read, "p", varid_read_p)
-		ret = nf90_inq_varid(ncid_read, "tke", varid_read_tke)
+		call check(nf90_inq_varid(ncid_read, "u", varid_read_u))
+		call check(nf90_inq_varid(ncid_read, "v", varid_read_v))
+		call check(nf90_inq_varid(ncid_read, "w", varid_read_w))
+		call check(nf90_inq_varid(ncid_read, "t", varid_read_t))
+		call check(nf90_inq_varid(ncid_read, "p", varid_read_p))
+		call check(nf90_inq_varid(ncid_read, "tke", varid_read_tke))
 		
 		! -- SFC --
-		ret = nf90_inq_varid(ncid_read, "tsfc", varid_read_tsfc)
-		ret = nf90_inq_varid(ncid_read, "tg1D", varid_read_tg1D)
-		ret = nf90_inq_varid(ncid_read, "raincnv", varid_read_rainncv)
-		ret = nf90_inq_varid(ncid_read, "rainncv_int", varid_read_rainncv_int)
+		call check(nf90_inq_varid(ncid_read, "tsfc", varid_read_tsfc))
+		call check(nf90_inq_varid(ncid_read, "tg1D", varid_read_tg1D))
+		call check(nf90_inq_varid(ncid_read, "raincnv", varid_read_rainncv))
+		call check(nf90_inq_varid(ncid_read, "rainncv_int", varid_read_rainncv_int))
 		
 		! -- SOIL --
 		if( soil_model .eq. 1 ) then
-			ret = nf90_inq_varid(ncid_read, "smois", varid_read_smois)
+			call check(nf90_inq_varid(ncid_read, "smois", varid_read_smois))
 		endif
 		
 		! -- BIN --
-		ret = nf90_inq_varid(ncid_read, "moist", varid_read_moist)
+		call check(nf90_inq_varid(ncid_read, "moist", varid_read_moist))
 		if ( opt_bin )  then
-			ret = nf90_inq_varid(ncid_read, "binvar", varid_read_binvar)
+			call check(nf90_inq_varid(ncid_read, "binvar", varid_read_binvar))
 		endif
 		
 		!----------------------------------------------------------------------------
@@ -75,12 +74,12 @@ module module_benchmark_core
 		count3D = (/ (ite-its)+1, (jte-jts)+1, (kde-kds)+1 /)
 		
 		call system_clock(ts)
-			ret = nf90_get_var(ncid_read, varid_read_u, u, start3D, count3D)
-			ret = nf90_get_var(ncid_read, varid_read_v, v, start3D, count3D)
-			ret = nf90_get_var(ncid_read, varid_read_w, w, start3D, count3D)
-			ret = nf90_get_var(ncid_read, varid_read_t, t, start3D, count3D)
-			ret = nf90_get_var(ncid_read, varid_read_p, p, start3D, count3D)
-			ret = nf90_get_var(ncid_read, varid_read_tke, tke, start3D, count3D)
+			call check(nf90_get_var(ncid_read, varid_read_u, u, start3D, count3D))
+			call check(nf90_get_var(ncid_read, varid_read_v, v, start3D, count3D))
+			call check(nf90_get_var(ncid_read, varid_read_w, w, start3D, count3D))
+			call check(nf90_get_var(ncid_read, varid_read_t, t, start3D, count3D))
+			call check(nf90_get_var(ncid_read, varid_read_p, p, start3D, count3D))
+			call check(nf90_get_var(ncid_read, varid_read_tke, tke, start3D, count3D))
 		call system_clock(te, t_rate, t_max)
 		time_write = time_write + (te-ts)
 		
@@ -89,7 +88,7 @@ module module_benchmark_core
 		count2D = (/ im1d, 1 /)
 		
 		call system_clock(ts)
-			ret = nf90_get_var(ncid_read, varid_read_tsfc, tsfc, start2D, count2D)
+			call check(nf90_get_var(ncid_read, varid_read_tsfc, tsfc, start2D, count2D))
 		call system_clock(te, t_rate, t_max)
 		time_write = time_write + (te-ts)
 		
@@ -97,7 +96,7 @@ module module_benchmark_core
 		count3D = (/ im1d, nzg, 1 /)
 		
 		call system_clock(ts)
-			ret = nf90_get_var(ncid_read, varid_read_tg1D, tg1D, start3D, count3D)
+			call check(nf90_get_var(ncid_read, varid_read_tg1D, tg1D, start3D, count3D))
 		call system_clock(te, t_rate, t_max)
 		time_write = time_write + (te-ts)
 		
@@ -105,8 +104,8 @@ module module_benchmark_core
 		count2D = (/ (ite-its)+1, (jte-jts)+1 /)
 		
 		call system_clock(ts)
-			ret = nf90_get_var(ncid_read, varid_read_rainncv, rainncv, start2D, count2D)
-			ret = nf90_get_var(ncid_read, varid_read_rainncv_int, rainncv_int, start2D, count2D)
+			call check(nf90_get_var(ncid_read, varid_read_rainncv, rainncv, start2D, count2D))
+			call check(nf90_get_var(ncid_read, varid_read_rainncv_int, rainncv_int, start2D, count2D))
 		call system_clock(te, t_rate, t_max)
 		time_write = time_write + (te-ts)
 		
@@ -116,7 +115,7 @@ module module_benchmark_core
 		
 		if( soil_model .eq. 1 ) then
 			call system_clock(ts)
-				ret = nf90_get_var(ncid_read, varid_read_smois, smois, start3D, count3D)
+				call check(nf90_get_var(ncid_read, varid_read_smois, smois, start3D, count3D))
 			call system_clock(te, t_rate, t_max)
 			time_write = time_write + (te-ts)
 		end if
@@ -126,7 +125,7 @@ module module_benchmark_core
 		count4D = (/ (ite-its)+1, (jte-jts)+1, (kde-kds)+1, (espcs-sspcs)+1 /)
 		
 		call system_clock(ts)
-			ret = nf90_get_var(ncid_read, varid_read_moist, moist, start4D, count4D)
+			call check(nf90_get_var(ncid_read, varid_read_moist, moist, start4D, count4D))
 		call system_clock(te, t_rate, t_max)
 		time_write = time_write + (te-ts)
 		
@@ -135,13 +134,13 @@ module module_benchmark_core
 			count4D = (/ (ite-its)+1, (jte-jts)+1, (kde-kds)+1, (ebin-sbin)+1 /)
 			
 			call system_clock(ts)
-				ret = nf90_get_var(ncid_read, varid_read_binvar, binvar, start4D, count4D)
+				call check(nf90_get_var(ncid_read, varid_read_binvar, binvar, start4D, count4D))
 			call system_clock(te, t_rate, t_max)
 		time_write = time_write + (te-ts)
 		endif
 		
 		! Close the file, freeing all resources.
-		ret = nf90_close(ncid_read)
+		call check(nf90_close(ncid_read))
 		
 		datasize = 8_8 * ( 2_8 * ( int8((ite-its)+1)*int8((jte-jts)+1) ) + &
 				 6_8 * ( int8((ite-its)+1)*int8((jte-jts)+1)*int8((kde-kds)+1) ) + &
@@ -191,12 +190,12 @@ module module_benchmark_core
 		! Create NetCDF File Section - OUT
 		FILE_NAME = "./output/lesout_integral.nc"
 		call check(nf90_create_par(FILE_NAME, IOR(NF90_NETCDF4, NF90_MPIIO), MPI_COMM_WORLD, MPI_INFO_NULL, ncid_sum))
-		ret = nf90_set_fill(ncid_sum, nf90_nofill, oldmode)
+		call check(nf90_set_fill(ncid_sum, nf90_nofill, oldmode))
 		
 		! Dimension - atm - i, j, k
-		ret = nf90_def_dim(ncid_sum, "i", (ide-ids)+1, dimid_sum_i)
-		ret = nf90_def_dim(ncid_sum, "j", (jde-jds)+1, dimid_sum_j)
-		ret = nf90_def_dim(ncid_sum, "k", (kde-kds)+1, dimid_sum_k)
+		call check(nf90_def_dim(ncid_sum, "i", (ide-ids)+1, dimid_sum_i))
+		call check(nf90_def_dim(ncid_sum, "j", (jde-jds)+1, dimid_sum_j))
+		call check(nf90_def_dim(ncid_sum, "k", (kde-kds)+1, dimid_sum_k))
 		dimid2D = (/ dimid_sum_i, dimid_sum_j /)
 		dimid3D = (/ dimid_sum_i, dimid_sum_j, dimid_sum_k /)
 		
@@ -205,13 +204,13 @@ module module_benchmark_core
 		chunksize3D = (/ (ite-its)+1, (jte-jts)+1, (kde-kds)+1 /)
 		
 		! Variable - u v w t p tke
-		ret = nf90_def_var(ncid_sum, "sw_int", NF90_DOUBLE, dimid2D, varid_sum_sw, chunksizes=chunksize2D)
-		ret = nf90_def_var(ncid_sum, "lw_int", NF90_DOUBLE, dimid2D, varid_sum_lw, chunksizes=chunksize2D)
-		ret = nf90_def_var(ncid_sum, "sw_ra_heating_int", NF90_DOUBLE, dimid3D, varid_sum_sw_ra, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_sum, "lw_ra_heating_int", NF90_DOUBLE, dimid3D, varid_sum_lw_ra, chunksizes=chunksize3D)
+		call check(nf90_def_var(ncid_sum, "sw_int", NF90_DOUBLE, dimid2D, varid_sum_sw, chunksizes=chunksize2D))
+		call check(nf90_def_var(ncid_sum, "lw_int", NF90_DOUBLE, dimid2D, varid_sum_lw, chunksizes=chunksize2D))
+		call check(nf90_def_var(ncid_sum, "sw_ra_heating_int", NF90_DOUBLE, dimid3D, varid_sum_sw_ra, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_sum, "lw_ra_heating_int", NF90_DOUBLE, dimid3D, varid_sum_lw_ra, chunksizes=chunksize3D))
 		
 		! End of Define
-		ret = nf90_enddef(ncid_sum)
+		call check(nf90_enddef(ncid_sum))
 		
 		start2D = (/ its, jts /)
 		count2D = (/ (ite-its)+1, (jte-jts)+1 /)	
@@ -219,21 +218,21 @@ module module_benchmark_core
 		count3D = (/ (ite-its)+1, (jte-jts)+1, (kde-kds)+1 /)
 		
 		! Set Parallel Access Mode INDEPENDENT/COLLECTIVE
-		ret = nf90_var_par_access(ncid_sum, varid_sum_sw, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_sum, varid_sum_lw, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_sum, varid_sum_sw_ra, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_sum, varid_sum_sw_ra, NF90_INDEPENDENT)
+		call check(nf90_var_par_access(ncid_sum, varid_sum_sw, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_sum, varid_sum_lw, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_sum, varid_sum_sw_ra, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_sum, varid_sum_sw_ra, NF90_INDEPENDENT))
 		
 		! Write
 		call system_clock(ts)
-			ret = nf90_put_var(ncid_sum, varid_sum_sw, sw_int(its:ite,jts:jte), start2D, count2D)
-			ret = nf90_put_var(ncid_sum, varid_sum_lw, lw_int(its:ite,jts:jte), start2D, count2D)
-			ret = nf90_put_var(ncid_sum, varid_sum_sw_ra, sw_ra_heating_int(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_sum, varid_sum_lw_ra, lw_ra_heating_int(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_sync(ncid_sum)
+			call check(nf90_put_var(ncid_sum, varid_sum_sw, sw_int(its:ite,jts:jte), start2D, count2D))
+			call check(nf90_put_var(ncid_sum, varid_sum_lw, lw_int(its:ite,jts:jte), start2D, count2D))
+			call check(nf90_put_var(ncid_sum, varid_sum_sw_ra, sw_ra_heating_int(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_sum, varid_sum_lw_ra, lw_ra_heating_int(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_sync(ncid_sum))
 		call system_clock(te, t_rate, t_max)
 		
-		ret = nf90_close(ncid_sum)
+		call check(nf90_close(ncid_sum))
 		
 		datasize = 8_8 * ( 2_8*int8((ite-its)+1)*int8((jte-jts)+1) + 2_8*int8((ite-its)+1)*int8((jte-jts)+1)*int8((kde-kds)+1) )
 		time_write = (te-ts)/real(t_rate)
@@ -276,85 +275,85 @@ module module_benchmark_core
 	
 		! Create NetCDF File - OUT
 		FILE_NAME = "./output/lesout_instant.nc"
-		ret = nf90_create_par(FILE_NAME, IOR(NF90_NETCDF4, NF90_MPIIO), MPI_COMM_WORLD, MPI_INFO_NULL, ncid_out)
-		ret = nf90_set_fill(ncid_out, nf90_nofill, oldmode)
+		call check(nf90_create_par(FILE_NAME, IOR(NF90_NETCDF4, NF90_MPIIO), MPI_COMM_WORLD, MPI_INFO_NULL, ncid_out))
+		call check(nf90_set_fill(ncid_out, nf90_nofill, oldmode))
 
 		! -- ATM --
 		! Dimension - atm - i, j, k
-		ret = nf90_def_dim(ncid_out, "i", (ide-ids)+1, dimid_out_i)
-		ret = nf90_def_dim(ncid_out, "j", (jde-jds)+1, dimid_out_j)
-		ret = nf90_def_dim(ncid_out, "k", (kde-kds)+1, dimid_out_k)
+		call check(nf90_def_dim(ncid_out, "i", (ide-ids)+1, dimid_out_i))
+		call check(nf90_def_dim(ncid_out, "j", (jde-jds)+1, dimid_out_j))
+		call check(nf90_def_dim(ncid_out, "k", (kde-kds)+1, dimid_out_k))
 		dimid3D = (/ dimid_out_i, dimid_out_j, dimid_out_k /)
 
 		! Chunksize
 		chunksize3D = (/ (ite-its)+1, (jte-jts)+1, (kde-kds)+1 /)	
 		
 		! Variable - u v w t p tke
-		ret = nf90_def_var(ncid_out, "u", NF90_FLOAT, dimid3D, varid_out_u, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "v", NF90_FLOAT, dimid3D, varid_out_v, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "w", NF90_FLOAT, dimid3D, varid_out_w, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "t", NF90_FLOAT, dimid3D, varid_out_t, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "p", NF90_FLOAT, dimid3D, varid_out_p, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "tke", NF90_FLOAT, dimid3D, varid_out_tke, chunksizes=chunksize3D)
+		call check(nf90_def_var(ncid_out, "u", NF90_FLOAT, dimid3D, varid_out_u, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "v", NF90_FLOAT, dimid3D, varid_out_v, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "w", NF90_FLOAT, dimid3D, varid_out_w, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "t", NF90_FLOAT, dimid3D, varid_out_t, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "p", NF90_FLOAT, dimid3D, varid_out_p, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "tke", NF90_FLOAT, dimid3D, varid_out_tke, chunksizes=chunksize3D))
 		
 		! -- SFC --
 		! Dimension - sfc - im1d, kg, nprocs
-		ret = nf90_def_dim(ncid_out, "im1d", im1d, dimid_out_im1d)
-		ret = nf90_def_dim(ncid_out, "kg", nzg, dimid_out_kg)
-		ret = nf90_def_dim(ncid_out, "nprocs", nprocs, dimid_out_nprocs)
+		call check(nf90_def_dim(ncid_out, "im1d", im1d, dimid_out_im1d))
+		call check(nf90_def_dim(ncid_out, "kg", nzg, dimid_out_kg))
+		call check(nf90_def_dim(ncid_out, "nprocs", nprocs, dimid_out_nprocs))
 		
 		dimid2D = (/ dimid_out_im1d, dimid_out_nprocs /)
 		chunksize2D = (/ im1d, 1 /)
-		ret = nf90_def_var(ncid_out, "tsfc", NF90_FLOAT, dimid2D, varid_out_tsfc, chunksizes=chunksize2D)
+		call check(nf90_def_var(ncid_out, "tsfc", NF90_FLOAT, dimid2D, varid_out_tsfc, chunksizes=chunksize2D))
 		
 		dimid3D = (/ dimid_out_im1d, dimid_out_kg, dimid_out_nprocs /)
 		chunksize3D = (/ im1d, nzg, 1 /)
-		ret = nf90_def_var(ncid_out, "tg1D", NF90_FLOAT, dimid3D, varid_out_tg1D, chunksizes=chunksize3D)
+		call check(nf90_def_var(ncid_out, "tg1D", NF90_FLOAT, dimid3D, varid_out_tg1D, chunksizes=chunksize3D))
 		
 		! -- BIN --
 		! Dimension - bin - spcs, bin
-		ret = nf90_def_dim(ncid_out, "spcs", (espcs-sspcs)+1, dimid_out_spcs)
+		call check(nf90_def_dim(ncid_out, "spcs", (espcs-sspcs)+1, dimid_out_spcs))
 		dimid4D = (/ dimid_out_i, dimid_out_j, dimid_out_k, dimid_out_spcs /)
 		chunksize4D = (/ (ite-its)+1, (jte-jts)+1, (kde-kds)+1, (espcs-sspcs)+1 /)	
-		ret = nf90_def_var(ncid_out, "moist", NF90_FLOAT, dimid4D, varid_out_moist, chunksizes=chunksize4D)
+		call check(nf90_def_var(ncid_out, "moist", NF90_FLOAT, dimid4D, varid_out_moist, chunksizes=chunksize4D))
 		
 		if( opt_bin ) then
-			ret = nf90_def_dim(ncid_out, "bin", (ebin-sbin)+1, dimid_out_bin)
+			call check(nf90_def_dim(ncid_out, "bin", (ebin-sbin)+1, dimid_out_bin))
 			dimid4D = (/ dimid_out_i, dimid_out_j, dimid_out_k, dimid_out_bin /)
 			chunksize4D = (/ (ite-its)+1, (jte-jts)+1, (kde-kds)+1, (ebin-sbin)+1 /)	
-			ret = nf90_def_var(ncid_out, "binvar", NF90_FLOAT, dimid4D, varid_out_binvar, chunksizes=chunksize4D)
+			call check(nf90_def_var(ncid_out, "binvar", NF90_FLOAT, dimid4D, varid_out_binvar, chunksizes=chunksize4D))
 		end if	
 		
 		! End of Define
-		ret = nf90_enddef(ncid_out)
+		call check(nf90_enddef(ncid_out))
 		
 		!----------------------------------------------------------------------------
 		
 		! -- ATM --
-		ret = nf90_var_par_access(ncid_out, varid_out_u, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_v, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_w, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_t, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_p, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_tke, NF90_INDEPENDENT)
+		call check(nf90_var_par_access(ncid_out, varid_out_u, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_v, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_w, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_t, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_p, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_tke, NF90_INDEPENDENT))
 		
 		start3D = (/ its, jts, kds /)
 		count3D = (/ (ite-its)+1, (jte-jts)+1, (kde-kds)+1 /)	
 		
 		call system_clock(ts)
-			ret = nf90_put_var(ncid_out, varid_out_u, real(u(its:ite,jts:jte,kds:kde)), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_v, real(v(its:ite,jts:jte,kds:kde)), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_w, real(w(its:ite,jts:jte,kds:kde)), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_t, real(t(its:ite,jts:jte,kds:kde)), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_p, real(p(its:ite,jts:jte,kds:kde)), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_tke, real(tke(its:ite,jts:jte,kds:kde)), start3D, count3D)
-			ret = nf90_sync(ncid_out)
+			call check(nf90_put_var(ncid_out, varid_out_u, real(u(its:ite,jts:jte,kds:kde)), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_v, real(v(its:ite,jts:jte,kds:kde)), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_w, real(w(its:ite,jts:jte,kds:kde)), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_t, real(t(its:ite,jts:jte,kds:kde)), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_p, real(p(its:ite,jts:jte,kds:kde)), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_tke, real(tke(its:ite,jts:jte,kds:kde)), start3D, count3D))
+			call check(nf90_sync(ncid_out))
 		call system_clock(te, t_rate, t_max)
 		time_write = time_write + (te-ts)
 
 		! -- SFC --
-		ret = nf90_var_par_access(ncid_out, varid_out_tsfc, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_tg1D, NF90_INDEPENDENT)
+		call check(nf90_var_par_access(ncid_out, varid_out_tsfc, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_tg1D, NF90_INDEPENDENT))
 		
 		start2D = (/ 1, myrank+1 /)
 		count2D = (/ im1d, 1 /)
@@ -362,41 +361,39 @@ module module_benchmark_core
 		count3D = (/ im1d, nzg, 1 /)
 		
 		call system_clock(ts)
-			ret = nf90_put_var(ncid_out, varid_out_tsfc, real(tsfc(1:im1d)), start2D, count2D)
-			ret = nf90_put_var(ncid_out, varid_out_tg1D, real(tg1D(1:im1d,1:nzg)), start3D, count3D)
-			ret = nf90_sync(ncid_out)
+			call check(nf90_put_var(ncid_out, varid_out_tsfc, real(tsfc(1:im1d)), start2D, count2D))
+			call check(nf90_put_var(ncid_out, varid_out_tg1D, real(tg1D(1:im1d,1:nzg)), start3D, count3D))
+			call check(nf90_sync(ncid_out))
 		call system_clock(te, t_rate, t_max)
 		time_write = time_write + (te-ts)
 		
 		! -- BIN --
-		ret = nf90_var_par_access(ncid_out, varid_out_moist, NF90_INDEPENDENT)
+		call check(nf90_var_par_access(ncid_out, varid_out_moist, NF90_INDEPENDENT))
 		
 		start4D = (/ its, jts, kds, sspcs /)
 		count4D = (/ (ite-its)+1, (jte-jts)+1, (kde-kds)+1, (espcs-sspcs)+1 /)
 		
 		call system_clock(ts)
-			ret = nf90_put_var(ncid_out, varid_out_moist, real(moist(its:ite,jts:jte,kds:kde,sspcs:espcs)), &
-                                           start4D, count4D)
-			ret = nf90_sync(ncid_out)
+			call check(nf90_put_var(ncid_out, varid_out_moist, real(moist(its:ite,jts:jte,kds:kde,sspcs:espcs)), start4D, count4D))
+			call check(nf90_sync(ncid_out))
 		call system_clock(te, t_rate, t_max)
 		time_write = time_write + (te-ts)
 		
 		if( opt_bin ) then
-			ret = nf90_var_par_access(ncid_out, varid_out_binvar, NF90_INDEPENDENT)
+			call check(nf90_var_par_access(ncid_out, varid_out_binvar, NF90_INDEPENDENT))
 			
 			start4D = (/ its, jts, kds, sbin /)
 			count4D = (/ (ite-its)+1, (jte-jts)+1, (kde-kds)+1, (ebin-sbin)+1 /)	
 			
 			call system_clock(ts)
-			ret = nf90_put_var(ncid_out, varid_out_binvar, real(binvar(its:ite,jts:jte,kds:kde,sbin:ebin)), &
-                                           start4D, count4D)
-			ret = nf90_sync(ncid_out)
+			call check(nf90_put_var(ncid_out, varid_out_binvar, real(binvar(its:ite,jts:jte,kds:kde,sbin:ebin)), start4D, count4D))
+			call check(nf90_sync(ncid_out))
 			call system_clock(te, t_rate, t_max)
 			time_write = time_write + (te-ts)
 		end if
 		
 		! Close the file. This frees up any internal netCDF resources, and flushes any buffers.
-		ret = nf90_close(ncid_out)
+		call check(nf90_close(ncid_out))
 		
 		datasize = 4_8 * ( 6_8 * ( int8((ite-its)+1)*int8((jte-jts)+1)*int8((kde-kds)+1) ) + &
 						 1_8 * ( int8(im1d) ) + &
@@ -458,330 +455,330 @@ module module_benchmark_core
 		
 		! Create NetCDF File - OUT
 		FILE_NAME = "./output/lesout_average.nc"
-		ret = nf90_create_par(FILE_NAME, IOR(NF90_NETCDF4, NF90_MPIIO), MPI_COMM_WORLD, MPI_INFO_NULL, ncid_out)
-		ret = nf90_set_fill(ncid_out, nf90_nofill, oldmode)
+		call check(nf90_create_par(FILE_NAME, IOR(NF90_NETCDF4, NF90_MPIIO), MPI_COMM_WORLD, MPI_INFO_NULL, ncid_out))
+		call check(nf90_set_fill(ncid_out, nf90_nofill, oldmode))
 	
                  u(:,:,:) = 1.d0; v(:,:,:) = 2.d0; w(:,:,:) = 3.d0
 	
 		! -- ATM --
 		! Dimension - atm - i, j, k
-		ret = nf90_def_dim(ncid_out, "i", (ide-ids)+1, dimid_out_i)
-		ret = nf90_def_dim(ncid_out, "j", (jde-jds)+1, dimid_out_j)
-		ret = nf90_def_dim(ncid_out, "k", (kde-kds)+1, dimid_out_k)
+		call check(nf90_def_dim(ncid_out, "i", (ide-ids)+1, dimid_out_i))
+		call check(nf90_def_dim(ncid_out, "j", (jde-jds)+1, dimid_out_j))
+		call check(nf90_def_dim(ncid_out, "k", (kde-kds)+1, dimid_out_k))
 		dimid3D = (/ dimid_out_i, dimid_out_j, dimid_out_k /)
 
 		! Chunksize
 		chunksize3D = (/ (ite-its)+1, (jte-jts)+1, (kde-kds)+1 /)	
 		
 		! Variable - u v w t p tke
-		ret = nf90_def_var(ncid_out, "um", NF90_FLOAT, dimid3D, varid_out_um, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "vm", NF90_FLOAT, dimid3D, varid_out_vm, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "wm", NF90_FLOAT, dimid3D, varid_out_wm, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "tm", NF90_FLOAT, dimid3D, varid_out_tm, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "tkem", NF90_FLOAT, dimid3D, varid_out_tkem, chunksizes=chunksize3D)
+		call check(nf90_def_var(ncid_out, "um", NF90_FLOAT, dimid3D, varid_out_um, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "vm", NF90_FLOAT, dimid3D, varid_out_vm, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "wm", NF90_FLOAT, dimid3D, varid_out_wm, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "tm", NF90_FLOAT, dimid3D, varid_out_tm, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "tkem", NF90_FLOAT, dimid3D, varid_out_tkem, chunksizes=chunksize3D))
 		
 		! -- ? --
-		ret = nf90_def_var(ncid_out, "dm", NF90_FLOAT, dimid3D, varid_out_dm, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "am", NF90_FLOAT, dimid3D, varid_out_am, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "bm", NF90_FLOAT, dimid3D, varid_out_bm, chunksizes=chunksize3D)
+		call check(nf90_def_var(ncid_out, "dm", NF90_FLOAT, dimid3D, varid_out_dm, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "am", NF90_FLOAT, dimid3D, varid_out_am, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "bm", NF90_FLOAT, dimid3D, varid_out_bm, chunksizes=chunksize3D))
 		
 		! -- SFC --
 		dimid2D = (/ dimid_out_i, dimid_out_j /)
 		chunksize2D = (/ (ite-its)+1, (jte-jts)+1 /)	
-		ret = nf90_def_var(ncid_out, "swm", NF90_FLOAT, dimid2D, varid_out_swm, chunksizes=chunksize2D)
-		ret = nf90_def_var(ncid_out, "lwm", NF90_FLOAT, dimid2D, varid_out_lwm, chunksizes=chunksize2D)
+		call check(nf90_def_var(ncid_out, "swm", NF90_FLOAT, dimid2D, varid_out_swm, chunksizes=chunksize2D))
+		call check(nf90_def_var(ncid_out, "lwm", NF90_FLOAT, dimid2D, varid_out_lwm, chunksizes=chunksize2D))
 		
 		! -- CORRELATION --
 		dimid3D = (/ dimid_out_i, dimid_out_j, dimid_out_k /)
 		chunksize3D = (/ (ite-its)+1, (jte-jts)+1, (kde-kds)+1 /)	
-		ret = nf90_def_var(ncid_out, "u2m", NF90_FLOAT, dimid3D, varid_out_u2m, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "v2m", NF90_FLOAT, dimid3D, varid_out_v2m, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "w2m", NF90_FLOAT, dimid3D, varid_out_w2m, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "uvm", NF90_FLOAT, dimid3D, varid_out_uvm, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "vwm", NF90_FLOAT, dimid3D, varid_out_vwm, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "wum", NF90_FLOAT, dimid3D, varid_out_wum, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "t2m", NF90_FLOAT, dimid3D, varid_out_t2m, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "tum", NF90_FLOAT, dimid3D, varid_out_tum, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "tvm", NF90_FLOAT, dimid3D, varid_out_tvm, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "twm", NF90_FLOAT, dimid3D, varid_out_twm, chunksizes=chunksize3D)
+		call check(nf90_def_var(ncid_out, "u2m", NF90_FLOAT, dimid3D, varid_out_u2m, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "v2m", NF90_FLOAT, dimid3D, varid_out_v2m, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "w2m", NF90_FLOAT, dimid3D, varid_out_w2m, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "uvm", NF90_FLOAT, dimid3D, varid_out_uvm, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "vwm", NF90_FLOAT, dimid3D, varid_out_vwm, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "wum", NF90_FLOAT, dimid3D, varid_out_wum, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "t2m", NF90_FLOAT, dimid3D, varid_out_t2m, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "tum", NF90_FLOAT, dimid3D, varid_out_tum, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "tvm", NF90_FLOAT, dimid3D, varid_out_tvm, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "twm", NF90_FLOAT, dimid3D, varid_out_twm, chunksizes=chunksize3D))
 		
 		! -- STRESS --
 		dimid3D = (/ dimid_out_i, dimid_out_j, dimid_out_k /)
 		chunksize3D = (/ (ite-its)+1, (jte-jts)+1, (kde-kds)+1 /)	
-		ret = nf90_def_var(ncid_out, "tau11m", NF90_FLOAT, dimid3D, varid_out_tau11m, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "tau22m", NF90_FLOAT, dimid3D, varid_out_tau22m, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "tau33m", NF90_FLOAT, dimid3D, varid_out_tau33m, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "tau12m", NF90_FLOAT, dimid3D, varid_out_tau12m, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "tau23m", NF90_FLOAT, dimid3D, varid_out_tau23m, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "tau31m", NF90_FLOAT, dimid3D, varid_out_tau31m, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "t_flux1m", NF90_FLOAT, dimid3D, varid_out_t_flux1m, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "t_flux2m", NF90_FLOAT, dimid3D, varid_out_t_flux2m, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "t_flux3m", NF90_FLOAT, dimid3D, varid_out_t_flux3m, chunksizes=chunksize3D)
+		call check(nf90_def_var(ncid_out, "tau11m", NF90_FLOAT, dimid3D, varid_out_tau11m, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "tau22m", NF90_FLOAT, dimid3D, varid_out_tau22m, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "tau33m", NF90_FLOAT, dimid3D, varid_out_tau33m, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "tau12m", NF90_FLOAT, dimid3D, varid_out_tau12m, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "tau23m", NF90_FLOAT, dimid3D, varid_out_tau23m, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "tau31m", NF90_FLOAT, dimid3D, varid_out_tau31m, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "t_flux1m", NF90_FLOAT, dimid3D, varid_out_t_flux1m, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "t_flux2m", NF90_FLOAT, dimid3D, varid_out_t_flux2m, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "t_flux3m", NF90_FLOAT, dimid3D, varid_out_t_flux3m, chunksizes=chunksize3D))
 		
 		! -- GRADIENT --
 		dimid3D = (/ dimid_out_i, dimid_out_j, dimid_out_k /)
 		chunksize3D = (/ (ite-its)+1, (jte-jts)+1, (kde-kds)+1 /)	
-		ret = nf90_def_var(ncid_out, "uxm", NF90_FLOAT, dimid3D, varid_out_uxm, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "uym", NF90_FLOAT, dimid3D, varid_out_uym, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "uzm", NF90_FLOAT, dimid3D, varid_out_uzm, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "vxm", NF90_FLOAT, dimid3D, varid_out_vxm, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "vym", NF90_FLOAT, dimid3D, varid_out_vym, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "vzm", NF90_FLOAT, dimid3D, varid_out_vzm, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "wxm", NF90_FLOAT, dimid3D, varid_out_wxm, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "wym", NF90_FLOAT, dimid3D, varid_out_wym, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "wzm", NF90_FLOAT, dimid3D, varid_out_wzm, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "txm", NF90_FLOAT, dimid3D, varid_out_txm, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "tym", NF90_FLOAT, dimid3D, varid_out_tym, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_out, "tzm", NF90_FLOAT, dimid3D, varid_out_tzm, chunksizes=chunksize3D)
+		call check(nf90_def_var(ncid_out, "uxm", NF90_FLOAT, dimid3D, varid_out_uxm, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "uym", NF90_FLOAT, dimid3D, varid_out_uym, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "uzm", NF90_FLOAT, dimid3D, varid_out_uzm, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "vxm", NF90_FLOAT, dimid3D, varid_out_vxm, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "vym", NF90_FLOAT, dimid3D, varid_out_vym, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "vzm", NF90_FLOAT, dimid3D, varid_out_vzm, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "wxm", NF90_FLOAT, dimid3D, varid_out_wxm, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "wym", NF90_FLOAT, dimid3D, varid_out_wym, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "wzm", NF90_FLOAT, dimid3D, varid_out_wzm, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "txm", NF90_FLOAT, dimid3D, varid_out_txm, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "tym", NF90_FLOAT, dimid3D, varid_out_tym, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_out, "tzm", NF90_FLOAT, dimid3D, varid_out_tzm, chunksizes=chunksize3D))
 		
 		! -- BIN --
 		! Dimension - bin - spcs, bin
-		ret = nf90_def_dim(ncid_out, "spcs", (espcs-sspcs)+1, dimid_out_spcs)
+		call check(nf90_def_dim(ncid_out, "spcs", (espcs-sspcs)+1, dimid_out_spcs))
 		dimid4D = (/ dimid_out_i, dimid_out_j, dimid_out_k, dimid_out_spcs /)
 		chunksize4D = (/ (ite-its)+1, (jte-jts)+1, (kde-kds)+1, (espcs-sspcs)+1 /)	
-		ret = nf90_def_var(ncid_out, "moistm", NF90_FLOAT, dimid4D, varid_out_moistm, chunksizes=chunksize4D)
-		ret = nf90_def_var(ncid_out, "moist2m", NF90_FLOAT, dimid4D, varid_out_moist2m, chunksizes=chunksize4D)
-		ret = nf90_def_var(ncid_out, "moistum", NF90_FLOAT, dimid4D, varid_out_moistum, chunksizes=chunksize4D)
-		ret = nf90_def_var(ncid_out, "moistvm", NF90_FLOAT, dimid4D, varid_out_moistvm, chunksizes=chunksize4D)
-		ret = nf90_def_var(ncid_out, "moistwm", NF90_FLOAT, dimid4D, varid_out_moistwm, chunksizes=chunksize4D)
-		ret = nf90_def_var(ncid_out, "moist_flux1m", NF90_FLOAT, dimid4D, varid_out_moist_flux1m, chunksizes=chunksize4D)
-		ret = nf90_def_var(ncid_out, "moist_flux2m", NF90_FLOAT, dimid4D, varid_out_moist_flux2m, chunksizes=chunksize4D)
-		ret = nf90_def_var(ncid_out, "moist_flux3m", NF90_FLOAT, dimid4D, varid_out_moist_flux3m, chunksizes=chunksize4D)
-		ret = nf90_def_var(ncid_out, "moistxm", NF90_FLOAT, dimid4D, varid_out_moistxm, chunksizes=chunksize4D)
-		ret = nf90_def_var(ncid_out, "moistym", NF90_FLOAT, dimid4D, varid_out_moistym, chunksizes=chunksize4D)
-		ret = nf90_def_var(ncid_out, "moistzm", NF90_FLOAT, dimid4D, varid_out_moistzm, chunksizes=chunksize4D)
+		call check(nf90_def_var(ncid_out, "moistm", NF90_FLOAT, dimid4D, varid_out_moistm, chunksizes=chunksize4D))
+		call check(nf90_def_var(ncid_out, "moist2m", NF90_FLOAT, dimid4D, varid_out_moist2m, chunksizes=chunksize4D))
+		call check(nf90_def_var(ncid_out, "moistum", NF90_FLOAT, dimid4D, varid_out_moistum, chunksizes=chunksize4D))
+		call check(nf90_def_var(ncid_out, "moistvm", NF90_FLOAT, dimid4D, varid_out_moistvm, chunksizes=chunksize4D))
+		call check(nf90_def_var(ncid_out, "moistwm", NF90_FLOAT, dimid4D, varid_out_moistwm, chunksizes=chunksize4D))
+		call check(nf90_def_var(ncid_out, "moist_flux1m", NF90_FLOAT, dimid4D, varid_out_moist_flux1m, chunksizes=chunksize4D))
+		call check(nf90_def_var(ncid_out, "moist_flux2m", NF90_FLOAT, dimid4D, varid_out_moist_flux2m, chunksizes=chunksize4D))
+		call check(nf90_def_var(ncid_out, "moist_flux3m", NF90_FLOAT, dimid4D, varid_out_moist_flux3m, chunksizes=chunksize4D))
+		call check(nf90_def_var(ncid_out, "moistxm", NF90_FLOAT, dimid4D, varid_out_moistxm, chunksizes=chunksize4D))
+		call check(nf90_def_var(ncid_out, "moistym", NF90_FLOAT, dimid4D, varid_out_moistym, chunksizes=chunksize4D))
+		call check(nf90_def_var(ncid_out, "moistzm", NF90_FLOAT, dimid4D, varid_out_moistzm, chunksizes=chunksize4D))
 		
 		if( opt_bin ) then
-			ret = nf90_def_dim(ncid_out, "bin", (ebin-sbin)+1, dimid_out_bin)
+			call check(nf90_def_dim(ncid_out, "bin", (ebin-sbin)+1, dimid_out_bin))
 			dimid4D = (/ dimid_out_i, dimid_out_j, dimid_out_k, dimid_out_bin /)
 			chunksize4D = (/ (ite-its)+1, (jte-jts)+1, (kde-kds)+1, (ebin-sbin)+1 /)	
-			ret = nf90_def_var(ncid_out, "binvarm", NF90_FLOAT, dimid4D, varid_out_binvarm, chunksizes=chunksize4D)
-			ret = nf90_def_var(ncid_out, "binvar2m", NF90_FLOAT, dimid4D, varid_out_binvar2m, chunksizes=chunksize4D)
-			ret = nf90_def_var(ncid_out, "binvarum", NF90_FLOAT, dimid4D, varid_out_binvarum, chunksizes=chunksize4D)
-			ret = nf90_def_var(ncid_out, "binvarvm", NF90_FLOAT, dimid4D, varid_out_binvarvm, chunksizes=chunksize4D)
-			ret = nf90_def_var(ncid_out, "binvarwm", NF90_FLOAT, dimid4D, varid_out_binvarwm, chunksizes=chunksize4D)
-			ret = nf90_def_var(ncid_out, "binvar_flux1m", NF90_FLOAT, dimid4D, varid_out_binvar_flux1m, chunksizes=chunksize4D)
-			ret = nf90_def_var(ncid_out, "binvar_flux2m", NF90_FLOAT, dimid4D, varid_out_binvar_flux2m, chunksizes=chunksize4D)
-			ret = nf90_def_var(ncid_out, "binvar_flux3m", NF90_FLOAT, dimid4D, varid_out_binvar_flux3m, chunksizes=chunksize4D)
-			ret = nf90_def_var(ncid_out, "binvarxm", NF90_FLOAT, dimid4D, varid_out_binvarxm, chunksizes=chunksize4D)
-			ret = nf90_def_var(ncid_out, "binvarym", NF90_FLOAT, dimid4D, varid_out_binvarym, chunksizes=chunksize4D)
-			ret = nf90_def_var(ncid_out, "binvarzm", NF90_FLOAT, dimid4D, varid_out_binvarzm, chunksizes=chunksize4D)
+			call check(nf90_def_var(ncid_out, "binvarm", NF90_FLOAT, dimid4D, varid_out_binvarm, chunksizes=chunksize4D))
+			call check(nf90_def_var(ncid_out, "binvar2m", NF90_FLOAT, dimid4D, varid_out_binvar2m, chunksizes=chunksize4D))
+			call check(nf90_def_var(ncid_out, "binvarum", NF90_FLOAT, dimid4D, varid_out_binvarum, chunksizes=chunksize4D))
+			call check(nf90_def_var(ncid_out, "binvarvm", NF90_FLOAT, dimid4D, varid_out_binvarvm, chunksizes=chunksize4D))
+			call check(nf90_def_var(ncid_out, "binvarwm", NF90_FLOAT, dimid4D, varid_out_binvarwm, chunksizes=chunksize4D))
+			call check(nf90_def_var(ncid_out, "binvar_flux1m", NF90_FLOAT, dimid4D, varid_out_binvar_flux1m, chunksizes=chunksize4D))
+			call check(nf90_def_var(ncid_out, "binvar_flux2m", NF90_FLOAT, dimid4D, varid_out_binvar_flux2m, chunksizes=chunksize4D))
+			call check(nf90_def_var(ncid_out, "binvar_flux3m", NF90_FLOAT, dimid4D, varid_out_binvar_flux3m, chunksizes=chunksize4D))
+			call check(nf90_def_var(ncid_out, "binvarxm", NF90_FLOAT, dimid4D, varid_out_binvarxm, chunksizes=chunksize4D))
+			call check(nf90_def_var(ncid_out, "binvarym", NF90_FLOAT, dimid4D, varid_out_binvarym, chunksizes=chunksize4D))
+			call check(nf90_def_var(ncid_out, "binvarzm", NF90_FLOAT, dimid4D, varid_out_binvarzm, chunksizes=chunksize4D))
 		end if	
 		
 		! End of Define
-		ret = nf90_enddef(ncid_out)
+		call check(nf90_enddef(ncid_out))
 		
 		!----------------------------------------------------------------------------
 		
 		! -- ATM --
-		ret = nf90_var_par_access(ncid_out, varid_out_um, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_vm, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_wm, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_tm, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_tkem, NF90_INDEPENDENT)
+		call check(nf90_var_par_access(ncid_out, varid_out_um, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_vm, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_wm, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_tm, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_tkem, NF90_INDEPENDENT))
 		
 		start3D = (/ its, jts, kds /)
 		count3D = (/ (ite-its)+1, (jte-jts)+1, (kde-kds)+1 /)	
 		
 		call system_clock(ts)
-			ret = nf90_put_var(ncid_out, varid_out_um, um(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_vm, vm(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_wm, wm(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_tm, tm(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_tkem, tkem(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_sync(ncid_out)
+			call check(nf90_put_var(ncid_out, varid_out_um, um(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_vm, vm(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_wm, wm(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_tm, tm(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_tkem, tkem(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_sync(ncid_out))
 		call system_clock(te, t_rate, t_max)
 		time_write = time_write + (te-ts)
 		
 		! -- ? --
-		ret = nf90_var_par_access(ncid_out, varid_out_dm, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_am, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_bm, NF90_INDEPENDENT)
+		call check(nf90_var_par_access(ncid_out, varid_out_dm, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_am, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_bm, NF90_INDEPENDENT))
 		
 		start3D = (/ its, jts, kds /)
 		count3D = (/ (ite-its)+1, (jte-jts)+1, (kde-kds)+1 /)	
 		
 		call system_clock(ts)
-			ret = nf90_put_var(ncid_out, varid_out_dm, dm(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_am, am(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_bm, bm(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_sync(ncid_out)
+			call check(nf90_put_var(ncid_out, varid_out_dm, dm(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_am, am(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_bm, bm(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_sync(ncid_out))
 		call system_clock(te, t_rate, t_max)
 		time_write = time_write + (te-ts)
 		
 		! -- SFC --
-		ret = nf90_var_par_access(ncid_out, varid_out_swm, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_lwm, NF90_INDEPENDENT)
+		call check(nf90_var_par_access(ncid_out, varid_out_swm, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_lwm, NF90_INDEPENDENT))
 		
 		start2D = (/ its, jts /)
 		count2D = (/ (ite-its)+1, (jte-jts)+1 /)	
 		
 		call system_clock(ts)
-			ret = nf90_put_var(ncid_out, varid_out_swm, swm(its:ite,jts:jte), start2D, count2D)
-			ret = nf90_put_var(ncid_out, varid_out_lwm, lwm(its:ite,jts:jte), start2D, count2D)
-			ret = nf90_sync(ncid_out)
+			call check(nf90_put_var(ncid_out, varid_out_swm, swm(its:ite,jts:jte), start2D, count2D))
+			call check(nf90_put_var(ncid_out, varid_out_lwm, lwm(its:ite,jts:jte), start2D, count2D))
+			call check(nf90_sync(ncid_out))
 		call system_clock(te, t_rate, t_max)
 		time_write = time_write + (te-ts)
 		
 		! -- CORRELATION --
-		ret = nf90_var_par_access(ncid_out, varid_out_u2m, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_v2m, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_w2m, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_uvm, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_vwm, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_wum, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_t2m, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_tum, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_tvm, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_twm, NF90_INDEPENDENT)
+		call check(nf90_var_par_access(ncid_out, varid_out_u2m, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_v2m, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_w2m, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_uvm, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_vwm, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_wum, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_t2m, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_tum, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_tvm, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_twm, NF90_INDEPENDENT))
 		
 		start3D = (/ its, jts, kds /)
 		count3D = (/ (ite-its)+1, (jte-jts)+1, (kde-kds)+1 /)	
 		
 		call system_clock(ts)
-			ret = nf90_put_var(ncid_out, varid_out_u2m, u2m(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_v2m, v2m(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_w2m, w2m(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_uvm, uvm(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_vwm, vwm(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_wum, wum(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_t2m, t2m(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_tum, tum(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_tvm, tvm(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_twm, twm(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_sync(ncid_out)
+			call check(nf90_put_var(ncid_out, varid_out_u2m, u2m(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_v2m, v2m(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_w2m, w2m(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_uvm, uvm(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_vwm, vwm(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_wum, wum(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_t2m, t2m(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_tum, tum(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_tvm, tvm(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_twm, twm(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_sync(ncid_out))
 		call system_clock(te, t_rate, t_max)
 		time_write = time_write + (te-ts)
 		
 		! -- STRESS --
-		ret = nf90_var_par_access(ncid_out, varid_out_tau11m, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_tau22m, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_tau33m, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_tau12m, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_tau23m, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_tau31m, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_t_flux1m, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_t_flux2m, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_t_flux3m, NF90_INDEPENDENT)
+		call check(nf90_var_par_access(ncid_out, varid_out_tau11m, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_tau22m, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_tau33m, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_tau12m, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_tau23m, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_tau31m, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_t_flux1m, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_t_flux2m, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_t_flux3m, NF90_INDEPENDENT))
 		
 		start3D = (/ its, jts, kds /)
 		count3D = (/ (ite-its)+1, (jte-jts)+1, (kde-kds)+1 /)	
 		
 		call system_clock(ts)
-			ret = nf90_put_var(ncid_out, varid_out_tau11m, tau11m(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_tau22m, tau22m(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_tau33m, tau33m(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_tau12m, tau12m(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_tau23m, tau23m(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_tau31m, tau31m(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_t_flux1m, t_flux1m(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_t_flux2m, t_flux2m(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_t_flux3m, t_flux3m(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_sync(ncid_out)
+			call check(nf90_put_var(ncid_out, varid_out_tau11m, tau11m(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_tau22m, tau22m(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_tau33m, tau33m(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_tau12m, tau12m(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_tau23m, tau23m(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_tau31m, tau31m(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_t_flux1m, t_flux1m(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_t_flux2m, t_flux2m(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_t_flux3m, t_flux3m(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_sync(ncid_out))
 		call system_clock(te, t_rate, t_max)
 		time_write = time_write + (te-ts)
 		
 		! -- GRADIENT --
-		ret = nf90_var_par_access(ncid_out, varid_out_uxm, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_uym, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_uzm, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_vxm, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_vym, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_vzm, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_wxm, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_wym, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_wzm, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_txm, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_tym, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_tzm, NF90_INDEPENDENT)
+		call check(nf90_var_par_access(ncid_out, varid_out_uxm, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_uym, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_uzm, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_vxm, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_vym, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_vzm, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_wxm, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_wym, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_wzm, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_txm, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_tym, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_tzm, NF90_INDEPENDENT))
 		
 		start3D = (/ its, jts, kds /)
 		count3D = (/ (ite-its)+1, (jte-jts)+1, (kde-kds)+1 /)	
 		
 		call system_clock(ts)
-			ret = nf90_put_var(ncid_out, varid_out_uxm, uxm(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_uym, uym(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_uzm, uzm(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_vxm, vxm(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_vym, vym(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_vzm, vzm(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_wxm, wxm(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_wym, wym(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_wzm, wzm(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_txm, txm(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_tym, tym(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_out, varid_out_tzm, tzm(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_sync(ncid_out)
+			call check(nf90_put_var(ncid_out, varid_out_uxm, uxm(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_uym, uym(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_uzm, uzm(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_vxm, vxm(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_vym, vym(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_vzm, vzm(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_wxm, wxm(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_wym, wym(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_wzm, wzm(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_txm, txm(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_tym, tym(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_out, varid_out_tzm, tzm(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_sync(ncid_out))
 		call system_clock(te, t_rate, t_max)
 		time_write = time_write + (te-ts)
 		
 		! -- BIN --
-		ret = nf90_var_par_access(ncid_out, varid_out_moistm, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_moist2m, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_moistum, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_moistvm, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_moistwm, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_moist_flux1m, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_moist_flux2m, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_moist_flux3m, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_moistxm, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_moistym, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_out, varid_out_moistzm, NF90_INDEPENDENT)
+		call check(nf90_var_par_access(ncid_out, varid_out_moistm, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_moist2m, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_moistum, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_moistvm, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_moistwm, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_moist_flux1m, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_moist_flux2m, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_moist_flux3m, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_moistxm, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_moistym, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_out, varid_out_moistzm, NF90_INDEPENDENT))
 		
 		start4D = (/ its, jts, kds, sspcs /)
 		count4D = (/ (ite-its)+1, (jte-jts)+1, (kde-kds)+1, (espcs-sspcs)+1 /)
 		
 		call system_clock(ts)
-			ret = nf90_put_var(ncid_out, varid_out_moistm, moistm(its:ite,jts:jte,kds:kde,sspcs:espcs), start4D, count4D)
-			ret = nf90_put_var(ncid_out, varid_out_moist2m, moist2m(its:ite,jts:jte,kds:kde,sspcs:espcs), start4D, count4D)
-			ret = nf90_put_var(ncid_out, varid_out_moistum, moistum(its:ite,jts:jte,kds:kde,sspcs:espcs), start4D, count4D)
-			ret = nf90_put_var(ncid_out, varid_out_moistvm, moistvm(its:ite,jts:jte,kds:kde,sspcs:espcs), start4D, count4D)
-			ret = nf90_put_var(ncid_out, varid_out_moistwm, moistwm(its:ite,jts:jte,kds:kde,sspcs:espcs), start4D, count4D)
-			ret = nf90_put_var(ncid_out, varid_out_moist_flux1m, moist_flux1m(its:ite,jts:jte,kds:kde,sspcs:espcs), start4D, count4D)
-			ret = nf90_put_var(ncid_out, varid_out_moist_flux2m, moist_flux2m(its:ite,jts:jte,kds:kde,sspcs:espcs), start4D, count4D)
-			ret = nf90_put_var(ncid_out, varid_out_moist_flux3m, moist_flux3m(its:ite,jts:jte,kds:kde,sspcs:espcs), start4D, count4D)
-			ret = nf90_put_var(ncid_out, varid_out_moistxm, moistxm(its:ite,jts:jte,kds:kde,sspcs:espcs), start4D, count4D)
-			ret = nf90_put_var(ncid_out, varid_out_moistym, moistym(its:ite,jts:jte,kds:kde,sspcs:espcs), start4D, count4D)
-			ret = nf90_put_var(ncid_out, varid_out_moistzm, moistzm(its:ite,jts:jte,kds:kde,sspcs:espcs), start4D, count4D)
-			ret = nf90_sync(ncid_out)
+			call check(nf90_put_var(ncid_out, varid_out_moistm, moistm(its:ite,jts:jte,kds:kde,sspcs:espcs), start4D, count4D))
+			call check(nf90_put_var(ncid_out, varid_out_moist2m, moist2m(its:ite,jts:jte,kds:kde,sspcs:espcs), start4D, count4D))
+			call check(nf90_put_var(ncid_out, varid_out_moistum, moistum(its:ite,jts:jte,kds:kde,sspcs:espcs), start4D, count4D))
+			call check(nf90_put_var(ncid_out, varid_out_moistvm, moistvm(its:ite,jts:jte,kds:kde,sspcs:espcs), start4D, count4D))
+			call check(nf90_put_var(ncid_out, varid_out_moistwm, moistwm(its:ite,jts:jte,kds:kde,sspcs:espcs), start4D, count4D))
+			call check(nf90_put_var(ncid_out, varid_out_moist_flux1m, moist_flux1m(its:ite,jts:jte,kds:kde,sspcs:espcs), start4D, count4D))
+			call check(nf90_put_var(ncid_out, varid_out_moist_flux2m, moist_flux2m(its:ite,jts:jte,kds:kde,sspcs:espcs), start4D, count4D))
+			call check(nf90_put_var(ncid_out, varid_out_moist_flux3m, moist_flux3m(its:ite,jts:jte,kds:kde,sspcs:espcs), start4D, count4D))
+			call check(nf90_put_var(ncid_out, varid_out_moistxm, moistxm(its:ite,jts:jte,kds:kde,sspcs:espcs), start4D, count4D))
+			call check(nf90_put_var(ncid_out, varid_out_moistym, moistym(its:ite,jts:jte,kds:kde,sspcs:espcs), start4D, count4D))
+			call check(nf90_put_var(ncid_out, varid_out_moistzm, moistzm(its:ite,jts:jte,kds:kde,sspcs:espcs), start4D, count4D))
+			call check(nf90_sync(ncid_out))
 		call system_clock(te, t_rate, t_max)
 		time_write = time_write + (te-ts)
 		
 		if( opt_bin ) then
-			ret = nf90_var_par_access(ncid_out, varid_out_binvarm, NF90_INDEPENDENT)
-			ret = nf90_var_par_access(ncid_out, varid_out_binvar2m, NF90_INDEPENDENT)
-			ret = nf90_var_par_access(ncid_out, varid_out_binvarum, NF90_INDEPENDENT)
-			ret = nf90_var_par_access(ncid_out, varid_out_binvarvm, NF90_INDEPENDENT)
-			ret = nf90_var_par_access(ncid_out, varid_out_binvarwm, NF90_INDEPENDENT)
-			ret = nf90_var_par_access(ncid_out, varid_out_binvar_flux1m, NF90_INDEPENDENT)
-			ret = nf90_var_par_access(ncid_out, varid_out_binvar_flux2m, NF90_INDEPENDENT)
-			ret = nf90_var_par_access(ncid_out, varid_out_binvar_flux3m, NF90_INDEPENDENT)
-			ret = nf90_var_par_access(ncid_out, varid_out_binvarxm, NF90_INDEPENDENT)
-			ret = nf90_var_par_access(ncid_out, varid_out_binvarym, NF90_INDEPENDENT)
-			ret = nf90_var_par_access(ncid_out, varid_out_binvarzm, NF90_INDEPENDENT)
+			call check(nf90_var_par_access(ncid_out, varid_out_binvarm, NF90_INDEPENDENT))
+			call check(nf90_var_par_access(ncid_out, varid_out_binvar2m, NF90_INDEPENDENT))
+			call check(nf90_var_par_access(ncid_out, varid_out_binvarum, NF90_INDEPENDENT))
+			call check(nf90_var_par_access(ncid_out, varid_out_binvarvm, NF90_INDEPENDENT))
+			call check(nf90_var_par_access(ncid_out, varid_out_binvarwm, NF90_INDEPENDENT))
+			call check(nf90_var_par_access(ncid_out, varid_out_binvar_flux1m, NF90_INDEPENDENT))
+			call check(nf90_var_par_access(ncid_out, varid_out_binvar_flux2m, NF90_INDEPENDENT))
+			call check(nf90_var_par_access(ncid_out, varid_out_binvar_flux3m, NF90_INDEPENDENT))
+			call check(nf90_var_par_access(ncid_out, varid_out_binvarxm, NF90_INDEPENDENT))
+			call check(nf90_var_par_access(ncid_out, varid_out_binvarym, NF90_INDEPENDENT))
+			call check(nf90_var_par_access(ncid_out, varid_out_binvarzm, NF90_INDEPENDENT))
 			
 			start4D = (/ its, jts, kds, sbin /)
 			count4D = (/ (ite-its)+1, (jte-jts)+1, (kde-kds)+1, (ebin-sbin)+1 /)	
 			
 			call system_clock(ts)
-				ret = nf90_put_var(ncid_out, varid_out_binvarm, binvarm(its:ite,jts:jte,kds:kde,sbin:ebin), start4D, count4D)
-				ret = nf90_put_var(ncid_out, varid_out_binvar2m, binvar2m(its:ite,jts:jte,kds:kde,sbin:ebin), start4D, count4D)
-				ret = nf90_put_var(ncid_out, varid_out_binvarum, binvarum(its:ite,jts:jte,kds:kde,sbin:ebin), start4D, count4D)
-				ret = nf90_put_var(ncid_out, varid_out_binvarvm, binvarvm(its:ite,jts:jte,kds:kde,sbin:ebin), start4D, count4D)
-				ret = nf90_put_var(ncid_out, varid_out_binvarwm, binvarwm(its:ite,jts:jte,kds:kde,sbin:ebin), start4D, count4D)
-				ret = nf90_put_var(ncid_out, varid_out_binvar_flux1m, binvar_flux1m(its:ite,jts:jte,kds:kde,sbin:ebin), start4D, count4D)
-				ret = nf90_put_var(ncid_out, varid_out_binvar_flux2m, binvar_flux2m(its:ite,jts:jte,kds:kde,sbin:ebin), start4D, count4D)
-				ret = nf90_put_var(ncid_out, varid_out_binvar_flux3m, binvar_flux3m(its:ite,jts:jte,kds:kde,sbin:ebin), start4D, count4D)
-				ret = nf90_put_var(ncid_out, varid_out_binvarxm, binvarxm(its:ite,jts:jte,kds:kde,sbin:ebin), start4D, count4D)
-				ret = nf90_put_var(ncid_out, varid_out_binvarym, binvarym(its:ite,jts:jte,kds:kde,sbin:ebin), start4D, count4D)
-				ret = nf90_put_var(ncid_out, varid_out_binvarzm, binvarzm(its:ite,jts:jte,kds:kde,sbin:ebin), start4D, count4D)
-				ret = nf90_sync(ncid_out)
+				call check(nf90_put_var(ncid_out, varid_out_binvarm, binvarm(its:ite,jts:jte,kds:kde,sbin:ebin), start4D, count4D))
+				call check(nf90_put_var(ncid_out, varid_out_binvar2m, binvar2m(its:ite,jts:jte,kds:kde,sbin:ebin), start4D, count4D))
+				call check(nf90_put_var(ncid_out, varid_out_binvarum, binvarum(its:ite,jts:jte,kds:kde,sbin:ebin), start4D, count4D))
+				call check(nf90_put_var(ncid_out, varid_out_binvarvm, binvarvm(its:ite,jts:jte,kds:kde,sbin:ebin), start4D, count4D))
+				call check(nf90_put_var(ncid_out, varid_out_binvarwm, binvarwm(its:ite,jts:jte,kds:kde,sbin:ebin), start4D, count4D))
+				call check(nf90_put_var(ncid_out, varid_out_binvar_flux1m, binvar_flux1m(its:ite,jts:jte,kds:kde,sbin:ebin), start4D, count4D))
+				call check(nf90_put_var(ncid_out, varid_out_binvar_flux2m, binvar_flux2m(its:ite,jts:jte,kds:kde,sbin:ebin), start4D, count4D))
+				call check(nf90_put_var(ncid_out, varid_out_binvar_flux3m, binvar_flux3m(its:ite,jts:jte,kds:kde,sbin:ebin), start4D, count4D))
+				call check(nf90_put_var(ncid_out, varid_out_binvarxm, binvarxm(its:ite,jts:jte,kds:kde,sbin:ebin), start4D, count4D))
+				call check(nf90_put_var(ncid_out, varid_out_binvarym, binvarym(its:ite,jts:jte,kds:kde,sbin:ebin), start4D, count4D))
+				call check(nf90_put_var(ncid_out, varid_out_binvarzm, binvarzm(its:ite,jts:jte,kds:kde,sbin:ebin), start4D, count4D))
+				call check(nf90_sync(ncid_out))
 			call system_clock(te, t_rate, t_max)
 			time_write = time_write + (te-ts)
 		end if
 		
 		! Close the file. This frees up any internal netCDF resources, and flushes any buffers.
-		ret = nf90_close(ncid_out)
+		call check(nf90_close(ncid_out))
 		
 		datasize = 4_8 * ( 2_8 * ( int8((ite-its)+1)*int8((jte-jts)+1) ) + &
 				 39_8 * ( int8((ite-its)+1)*int8((jte-jts)+1)*int8((kde-kds)+1) ) + &
@@ -827,108 +824,108 @@ module module_benchmark_core
 		
 		! Create NetCDF File - RST
 		FILE_NAME = "./output/lesrst_restart.nc"
-		ret = nf90_create_par(FILE_NAME, IOR(NF90_NETCDF4, NF90_MPIIO), MPI_COMM_WORLD, MPI_INFO_NULL, ncid_rst)
-		ret = nf90_set_fill(ncid_rst, nf90_nofill, oldmode)
+		call check(nf90_create_par(FILE_NAME, IOR(NF90_NETCDF4, NF90_MPIIO), MPI_COMM_WORLD, MPI_INFO_NULL, ncid_rst))
+		call check(nf90_set_fill(ncid_rst, nf90_nofill, oldmode))
 		
 		! -- ATM --
 		! Dimension - atm - i, j, k
-		ret = nf90_def_dim(ncid_rst, "i", (ide-ids)+1, dimid_rst_i)
-		ret = nf90_def_dim(ncid_rst, "j", (jde-jds)+1, dimid_rst_j)
-		ret = nf90_def_dim(ncid_rst, "k", (kde-kds)+1, dimid_rst_k)
+		call check(nf90_def_dim(ncid_rst, "i", (ide-ids)+1, dimid_rst_i))
+		call check(nf90_def_dim(ncid_rst, "j", (jde-jds)+1, dimid_rst_j))
+		call check(nf90_def_dim(ncid_rst, "k", (kde-kds)+1, dimid_rst_k))
 		dimid3D = (/ dimid_rst_i, dimid_rst_j, dimid_rst_k /)
 
 		! Chunksize
 		chunksize3D = (/ (ite-its)+1, (jte-jts)+1, (kde-kds)+1 /)	
 		
 		! Variable - u v w t p tke
-		ret = nf90_def_var(ncid_rst, "u", NF90_DOUBLE, dimid3D, varid_rst_u, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_rst, "v", NF90_DOUBLE, dimid3D, varid_rst_v, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_rst, "w", NF90_DOUBLE, dimid3D, varid_rst_w, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_rst, "t", NF90_DOUBLE, dimid3D, varid_rst_t, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_rst, "p", NF90_DOUBLE, dimid3D, varid_rst_p, chunksizes=chunksize3D)
-		ret = nf90_def_var(ncid_rst, "tke", NF90_DOUBLE, dimid3D, varid_rst_tke, chunksizes=chunksize3D)
+		call check(nf90_def_var(ncid_rst, "u", NF90_DOUBLE, dimid3D, varid_rst_u, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_rst, "v", NF90_DOUBLE, dimid3D, varid_rst_v, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_rst, "w", NF90_DOUBLE, dimid3D, varid_rst_w, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_rst, "t", NF90_DOUBLE, dimid3D, varid_rst_t, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_rst, "p", NF90_DOUBLE, dimid3D, varid_rst_p, chunksizes=chunksize3D))
+		call check(nf90_def_var(ncid_rst, "tke", NF90_DOUBLE, dimid3D, varid_rst_tke, chunksizes=chunksize3D))
 		
 		! -- SFC --
 		! Dimension - sfc - im1d, kg, nprocs
-		ret = nf90_def_dim(ncid_rst, "im1d", im1d, dimid_rst_im1d)
-		ret = nf90_def_dim(ncid_rst, "kg", nzg, dimid_rst_kg)
-		ret = nf90_def_dim(ncid_rst, "nprocs", nprocs, dimid_rst_nprocs)
+		call check(nf90_def_dim(ncid_rst, "im1d", im1d, dimid_rst_im1d))
+		call check(nf90_def_dim(ncid_rst, "kg", nzg, dimid_rst_kg))
+		call check(nf90_def_dim(ncid_rst, "nprocs", nprocs, dimid_rst_nprocs))
 		
 		dimid2D = (/ dimid_rst_im1d, dimid_rst_nprocs /)
 		chunksize2D = (/ im1d, 1 /)
-		ret = nf90_def_var(ncid_rst, "tsfc", NF90_DOUBLE, dimid2D, varid_rst_tsfc, chunksizes=chunksize2D)
+		call check(nf90_def_var(ncid_rst, "tsfc", NF90_DOUBLE, dimid2D, varid_rst_tsfc, chunksizes=chunksize2D))
 		
 		dimid3D = (/ dimid_rst_im1d, dimid_rst_kg, dimid_rst_nprocs /)
 		chunksize3D = (/ im1d, nzg, 1 /)
-		ret = nf90_def_var(ncid_rst, "tg1D", NF90_DOUBLE, dimid3D, varid_rst_tg1D, chunksizes=chunksize3D)
+		call check(nf90_def_var(ncid_rst, "tg1D", NF90_DOUBLE, dimid3D, varid_rst_tg1D, chunksizes=chunksize3D))
 		
 		dimid2D = (/ dimid_rst_i, dimid_rst_j /)
 		chunksize2D = (/ (ite-its)+1, (jte-jts)+1 /)
-		ret = nf90_def_var(ncid_rst, "rainncv", NF90_DOUBLE, dimid2D, varid_rst_rainncv, chunksizes=chunksize2D)
-		ret = nf90_def_var(ncid_rst, "rainncv_int", NF90_DOUBLE, dimid2D, varid_rst_rainncv_int, chunksizes=chunksize2D)
+		call check(nf90_def_var(ncid_rst, "rainncv", NF90_DOUBLE, dimid2D, varid_rst_rainncv, chunksizes=chunksize2D))
+		call check(nf90_def_var(ncid_rst, "rainncv_int", NF90_DOUBLE, dimid2D, varid_rst_rainncv_int, chunksizes=chunksize2D))
 		
 		! -- SOIL --
 		! Dimension - soil - l
 		if( soil_model .eq. 1 ) then
-			ret = nf90_def_dim(ncid_rst, "l", num_soil, dimid_rst_l)
+			call check(nf90_def_dim(ncid_rst, "l", num_soil, dimid_rst_l))
 			dimid3D = (/ dimid_rst_i, dimid_rst_j, dimid_rst_l /)
 			chunksize3D = (/ (ite-its)+1, (jte-jts)+1, num_soil /)
-			ret = nf90_def_var(ncid_rst, "smois", NF90_DOUBLE, dimid3D, varid_rst_smois, chunksizes=chunksize3D)
+			call check(nf90_def_var(ncid_rst, "smois", NF90_DOUBLE, dimid3D, varid_rst_smois, chunksizes=chunksize3D))
 		end if
 		
 		! -- BIN --
 		! Dimension - bin - spcs, bin
-		ret = nf90_def_dim(ncid_rst, "spcs", (espcs-sspcs)+1, dimid_rst_spcs)
+		call check(nf90_def_dim(ncid_rst, "spcs", (espcs-sspcs)+1, dimid_rst_spcs))
 		dimid4D = (/ dimid_rst_i, dimid_rst_j, dimid_rst_k, dimid_rst_spcs /)
 		chunksize4D = (/ (ite-its)+1, (jte-jts)+1, (kde-kds)+1, (espcs-sspcs)+1 /)	
-		ret = nf90_def_var(ncid_rst, "moist", NF90_DOUBLE, dimid4D, varid_rst_moist, chunksizes=chunksize4D)
+		call check(nf90_def_var(ncid_rst, "moist", NF90_DOUBLE, dimid4D, varid_rst_moist, chunksizes=chunksize4D))
 		
 		if( opt_bin ) then
-			ret = nf90_def_dim(ncid_rst, "bin", (ebin-sbin)+1, dimid_rst_bin)
+			call check(nf90_def_dim(ncid_rst, "bin", (ebin-sbin)+1, dimid_rst_bin))
 			dimid4D = (/ dimid_rst_i, dimid_rst_j, dimid_rst_k, dimid_rst_bin /)
 			chunksize4D = (/ (ite-its)+1, (jte-jts)+1, (kde-kds)+1, (ebin-sbin)+1 /)	
-			ret = nf90_def_var(ncid_rst, "binvar", NF90_DOUBLE, dimid4D, varid_rst_binvar, chunksizes=chunksize4D)
+			call check(nf90_def_var(ncid_rst, "binvar", NF90_DOUBLE, dimid4D, varid_rst_binvar, chunksizes=chunksize4D))
 		end if
 		
 		! End of Define
-		ret = nf90_enddef(ncid_rst)
+		call check(nf90_enddef(ncid_rst))
 		
 		!----------------------------------------------------------------------------
 		
 		! -- ATM --
-		ret = nf90_var_par_access(ncid_rst, varid_rst_u, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_rst, varid_rst_v, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_rst, varid_rst_w, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_rst, varid_rst_t, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_rst, varid_rst_p, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_rst, varid_rst_tke, NF90_INDEPENDENT)
+		call check(nf90_var_par_access(ncid_rst, varid_rst_u, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_rst, varid_rst_v, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_rst, varid_rst_w, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_rst, varid_rst_t, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_rst, varid_rst_p, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_rst, varid_rst_tke, NF90_INDEPENDENT))
 		
 		start3D = (/ its, jts, kds /)
 		count3D = (/ (ite-its)+1, (jte-jts)+1, (kde-kds)+1 /)	
 		
 		call system_clock(ts)
-			ret = nf90_put_var(ncid_rst, varid_rst_u, u(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_rst, varid_rst_v, v(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_rst, varid_rst_w, w(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_rst, varid_rst_t, t(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_rst, varid_rst_p, p(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_put_var(ncid_rst, varid_rst_tke, tke(its:ite,jts:jte,kds:kde), start3D, count3D)
-			ret = nf90_sync(ncid_rst)
+			call check(nf90_put_var(ncid_rst, varid_rst_u, u(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_rst, varid_rst_v, v(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_rst, varid_rst_w, w(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_rst, varid_rst_t, t(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_rst, varid_rst_p, p(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_put_var(ncid_rst, varid_rst_tke, tke(its:ite,jts:jte,kds:kde), start3D, count3D))
+			call check(nf90_sync(ncid_rst))
 		call system_clock(te, t_rate, t_max)
 		time_write = time_write + (te-ts)
 		
 		! -- SFC --
-		ret = nf90_var_par_access(ncid_rst, varid_rst_tsfc, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_rst, varid_rst_tg1D, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_rst, varid_rst_rainncv, NF90_INDEPENDENT)
-		ret = nf90_var_par_access(ncid_rst, varid_rst_rainncv_int, NF90_INDEPENDENT)
+		call check(nf90_var_par_access(ncid_rst, varid_rst_tsfc, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_rst, varid_rst_tg1D, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_rst, varid_rst_rainncv, NF90_INDEPENDENT))
+		call check(nf90_var_par_access(ncid_rst, varid_rst_rainncv_int, NF90_INDEPENDENT))
 		
 		start2D = (/ 1, myrank+1 /)
 		count2D = (/ im1d, 1 /)
 		
 		call system_clock(ts)
-			ret = nf90_put_var(ncid_rst, varid_rst_tsfc, tsfc(1:im1d), start2D, count2D)
-			ret = nf90_sync(ncid_rst)
+			call check(nf90_put_var(ncid_rst, varid_rst_tsfc, tsfc(1:im1d), start2D, count2D))
+			call check(nf90_sync(ncid_rst))
 		call system_clock(te, t_rate, t_max)
 		time_write = time_write + (te-ts)
 		
@@ -936,8 +933,8 @@ module module_benchmark_core
 		count3D = (/ im1d, nzg, 1 /)
 		
 		call system_clock(ts)
-			ret = nf90_put_var(ncid_rst, varid_rst_tg1D, tg1D(1:im1d,1:nzg), start3D, count3D)
-			ret = nf90_sync(ncid_rst)
+			call check(nf90_put_var(ncid_rst, varid_rst_tg1D, tg1D(1:im1d,1:nzg), start3D, count3D))
+			call check(nf90_sync(ncid_rst))
 		call system_clock(te, t_rate, t_max)
 		time_write = time_write + (te-ts)
 		
@@ -945,53 +942,53 @@ module module_benchmark_core
 		count2D = (/ (ite-its)+1, (jte-jts)+1 /)
 		
 		call system_clock(ts)
-			ret = nf90_put_var(ncid_rst, varid_rst_rainncv, rainncv(its:ite,jts:jte), start2D, count2D)
-			ret = nf90_put_var(ncid_rst, varid_rst_rainncv_int, rainncv_int(its:ite,jts:jte), start2D, count2D)
-			ret = nf90_sync(ncid_rst)
+			call check(nf90_put_var(ncid_rst, varid_rst_rainncv, rainncv(its:ite,jts:jte), start2D, count2D))
+			call check(nf90_put_var(ncid_rst, varid_rst_rainncv_int, rainncv_int(its:ite,jts:jte), start2D, count2D))
+			call check(nf90_sync(ncid_rst))
 		call system_clock(te, t_rate, t_max)
 		time_write = time_write + (te-ts)
 		
 		! -- SOIL --
 		if( soil_model .eq. 1 ) then
-			ret = nf90_var_par_access(ncid_rst, varid_rst_smois, NF90_INDEPENDENT)
+			call check(nf90_var_par_access(ncid_rst, varid_rst_smois, NF90_INDEPENDENT))
 			
 			start3D = (/ its, jts, 1 /)
 			count3D = (/ (ite-its)+1, (jte-jts)+1, num_soil /)
 			
 			call system_clock(ts)
-				ret = nf90_put_var(ncid_rst, varid_rst_smois, smois(its:ite,jts:jte,1:num_soil), start3D, count3D)
-				ret = nf90_sync(ncid_rst)
+				call check(nf90_put_var(ncid_rst, varid_rst_smois, smois(its:ite,jts:jte,1:num_soil), start3D, count3D))
+				call check(nf90_sync(ncid_rst))
 			call system_clock(te, t_rate, t_max)
 			time_write = time_write + (te-ts)
 		end if
 
 		! -- BIN --
-		ret = nf90_var_par_access(ncid_rst, varid_rst_moist, NF90_INDEPENDENT)
+		call check(nf90_var_par_access(ncid_rst, varid_rst_moist, NF90_INDEPENDENT))
 		
 		start4D= (/ its, jts, kds, sspcs /)
 		count4D = (/ (ite-its)+1, (jte-jts)+1, (kde-kds)+1, (espcs-sspcs)+1 /)
 		
 		call system_clock(ts)
-			ret = nf90_put_var(ncid_rst, varid_rst_moist, moist(its:ite,jts:jte,kds:kde,sspcs:espcs), start4D, count4D)
-			ret = nf90_sync(ncid_rst)
+			call check(nf90_put_var(ncid_rst, varid_rst_moist, moist(its:ite,jts:jte,kds:kde,sspcs:espcs), start4D, count4D))
+			call check(nf90_sync(ncid_rst))
 		call system_clock(te, t_rate, t_max)
 		time_write = time_write + (te-ts)
 		
 		if( opt_bin ) then
-			ret = nf90_var_par_access(ncid_rst, varid_rst_binvar, NF90_INDEPENDENT)
+			call check(nf90_var_par_access(ncid_rst, varid_rst_binvar, NF90_INDEPENDENT))
 			
 			start4D = (/ its, jts, kds, sbin /)
 			count4D = (/ (ite-its)+1, (jte-jts)+1, (kde-kds)+1, (ebin-sbin)+1 /)	
 			
 			call system_clock(ts)
-				ret = nf90_put_var(ncid_rst, varid_rst_binvar, binvar(its:ite,jts:jte,kds:kde,sbin:ebin), start4D, count4D)
-				ret = nf90_sync(ncid_rst)
+				call check(nf90_put_var(ncid_rst, varid_rst_binvar, binvar(its:ite,jts:jte,kds:kde,sbin:ebin), start4D, count4D))
+				call check(nf90_sync(ncid_rst))
 			call system_clock(te, t_rate, t_max)
 			time_write = time_write + (te-ts)
 		end if	
 		
 		! Close the file. This frees up any internal netCDF resources, and flushes any buffers.
-		ret = nf90_close(ncid_rst)
+		call check(nf90_close(ncid_rst))
 		
 		datasize = 8_8 * ( 2_8 * ( int8((ite-its)+1)*int8((jte-jts)+1) ) + &
 				 6_8 * ( int8((ite-its)+1)*int8((jte-jts)+1)*int8((kde-kds)+1) ) + &
